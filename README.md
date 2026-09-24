@@ -2,8 +2,7 @@
 
 A self-review checklist for GitHub's compare page. Six diff checks run the moment you land on `/compare` or `/pull/new`, before anyone else has seen the PR, no API key and no setup.
 
-![PR Preflight in action](./docs/demo.gif)
-<!-- GIF placeholder: TEST captures a real GIF of the badge → panel → expanded row flow on a planted-violation branch and swaps this path in. -->
+![PR Preflight on a GitHub compare page](assets/demo.gif)
 
 ## The six checks
 
@@ -43,6 +42,8 @@ npm run package   # build, then zip dist/ into release/pr-preflight-<version>.zi
 ```
 
 Load `dist/` via `chrome://extensions` → Developer mode → Load unpacked during development, same as the install-from-zip path above.
+
+The options page (defaults shown below) sets the warn/flag thresholds and toggles per-check: ![Options page defaults](assets/options.png)
 
 ## Privacy
 
