@@ -107,11 +107,21 @@ https://github.com/devanshchoudhary20/pr-preflight/blob/main/PRIVACY.md
 
 ## Screenshots (1280x800, capture on a planted-violation branch)
 
-- [ ] Badge on a compare page (collapsed, showing a worst-severity dot and count)
-- [ ] Expanded panel with findings (six rows, at least one flag and one warn visible)
-- [ ] Expanded row (one check's item list open, path:line and snippet visible)
-- [ ] Options page (thresholds, ignore globs, per-check toggles)
-- [ ] Popup (status line for the active compare tab)
+- [ ] Badge on a compare page (collapsed, showing a worst-severity dot and count) — still needs capturing, no matching still in `.anbu/evidence/`
+- [ ] Expanded panel with findings (six rows, at least one flag and one warn visible) — source: `.anbu/evidence/screen2-panel-clean-allpass.png` (1280x720, needs padding)
+- [ ] Expanded row (one check's item list open, path:line and snippet visible) — still needs capturing, no matching still in `.anbu/evidence/`
+- [ ] Options page (thresholds, ignore globs, per-check toggles) — source: `.anbu/evidence/screen3-options-defaults.png` (1280x720, needs padding)
+- [ ] Popup (status line for the active compare tab) — source: `.anbu/evidence/screen4-popup-as-page.png` (1280x720, needs padding)
+
+Everything already in `.anbu/evidence/` is 1280x720, 80px short on height. Chrome requires an exact 1280x800, so pad rather than stretch:
+
+```bash
+sips -p 800 1280 --padColor FFFFFF .anbu/evidence/screen2-panel-clean-allpass.png --out store/screenshot-2-panel.png
+sips -p 800 1280 --padColor FFFFFF .anbu/evidence/screen3-options-defaults.png --out store/screenshot-4-options.png
+sips -p 800 1280 --padColor FFFFFF .anbu/evidence/screen4-popup-as-page.png --out store/screenshot-5-popup.png
+```
+
+The badge (collapsed) and expanded-row shots have no matching still in the evidence set yet (only GIFs), those two need a fresh 1280x800 capture.
 
 ---
 
