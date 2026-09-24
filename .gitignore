@@ -26,3 +26,6 @@ release/*
 *.njsproj
 *.sln
 *.sw?
+
+# mission state and evidence stay local
+.anbu/
