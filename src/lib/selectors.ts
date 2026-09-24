@@ -5,7 +5,7 @@ export const selectors = {
   filePathAttr: "data-tagsearch-path",
   addedLine: ".blob-code-addition .blob-code-inner",
   diffStat: ".diffstat",
-  // Unverified on the live page (chunk 1 spike did not confirm these); "Insert into description" degrades to absent when missing.
+  // Present on compare pages with ?expand=1 (the shape /pull/new/<branch> redirects to), where GitHub renders the PR form inline.
   pullRequestTitle: "#pull_request_title",
   pullRequestBody: "#pull_request_body"
 }

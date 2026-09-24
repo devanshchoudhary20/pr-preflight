@@ -54,8 +54,9 @@
   bottom: var(--prp-space-lg);
   z-index: 2147483647;
   width: 360px;
-  max-height: 70vh;
-  overflow-y: auto;
+  max-height: calc(100vh - 32px);
+  display: flex;
+  flex-direction: column;
   background: var(--prp-n0);
   border: 1px solid var(--prp-n2);
   border-radius: var(--prp-radius-md);
@@ -65,6 +66,7 @@
 }
 
 .prp-panel-header {
+  flex-shrink: 0;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -104,6 +106,9 @@
 }
 
 .prp-panel-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
   padding: var(--prp-space-md);
 }
 
@@ -292,6 +297,7 @@ button.prp-row-item-path-link:hover {
 }
 
 .prp-panel-footer {
+  flex-shrink: 0;
   padding: var(--prp-space-md);
   border-top: 1px solid var(--prp-n2);
 }

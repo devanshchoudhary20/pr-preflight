@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, type KeyboardEvent } from "react"
 import type { CompareUrl } from "../lib/url"
 import type { DiffStats } from "../lib/diff"
 import { sortFindingsBySeverity, type Finding } from "../lib/checks"
@@ -22,15 +22,22 @@ interface PanelProps {
 }
 
 const SKELETON_ROW_KEYS = ["s0", "s1", "s2", "s3", "s4", "s5"]
-const COPY_CONFIRM_MS = 2000
+const CONFIRM_MS = 2000
+
+// The PR form only injects #pull_request_body as a <textarea>; a stray non-textarea match (unlikely, but the id isn't ours) must not offer the button.
+function findBodyTextarea(): HTMLTextAreaElement | null {
+  const field = document.querySelector(selectors.pullRequestBody)
+  return field instanceof HTMLTextAreaElement ? field : null
+}
 
 export function Panel({ compareUrl, loadState, stats, findings, errorMessage, errorHeading, onRetry, onCollapse }: PanelProps) {
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set())
   const [checkedIds, setCheckedIds] = useState<Set<string>>(new Set())
   const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">("idle")
+  const [insertState, setInsertState] = useState<"idle" | "inserted" | "missing">("idle")
   const panelRef = useRef<HTMLDivElement>(null)
-  // Read once at mount: the compare/PR form DOM is already present by document_idle, and this id is UNVERIFIED so it degrades to false silently.
-  const [bodyFieldExists] = useState(() => !!document.querySelector(selectors.pullRequestBody))
+  // Read once at mount: the compare/PR form DOM is already present by document_idle on ?expand=1 compare pages.
+  const [bodyFieldExists] = useState(() => findBodyTextarea() !== null)
 
   const owner = compareUrl?.owner ?? "unknown"
   const repo = compareUrl?.repo ?? "repo"
@@ -45,6 +52,7 @@ export function Panel({ compareUrl, loadState, stats, findings, errorMessage, er
   const showStats = isReady && stats !== null
   const statsLine = showStats ? `${pluralFiles(stats.files)} +${stats.additions} −${stats.deletions}` : ""
   const copyButtonLabel = copyState === "copied" ? "Copied" : copyState === "failed" ? "Copy failed" : "Copy as markdown"
+  const insertButtonLabel = insertState === "inserted" ? "Inserted" : insertState === "missing" ? "Field not found" : "Insert into description"
 
   useEffect(() => {
     if (!compareUrl) return
@@ -101,7 +109,12 @@ export function Panel({ compareUrl, loadState, stats, findings, errorMessage, er
 
   function showCopyResult(state: "copied" | "failed"): void {
     setCopyState(state)
-    setTimeout(() => setCopyState("idle"), COPY_CONFIRM_MS)
+    setTimeout(() => setCopyState("idle"), CONFIRM_MS)
+  }
+
+  function showInsertResult(state: "inserted" | "missing"): void {
+    setInsertState(state)
+    setTimeout(() => setInsertState("idle"), CONFIRM_MS)
   }
 
   function handleCopy(): void {
@@ -115,15 +128,27 @@ export function Panel({ compareUrl, loadState, stats, findings, errorMessage, er
   }
 
   function handleInsert(): void {
-    const field = document.querySelector<HTMLTextAreaElement>(selectors.pullRequestBody)
-    if (!field) return
+    // Re-check at click time, not just at mount: GitHub's PR-form DOM can swap out from under a long-open panel.
+    const field = findBodyTextarea()
+    if (!field) {
+      showInsertResult("missing")
+      return
+    }
     const markdown = formatFindingsAsMarkdown(sortedFindings, checkedIds)
-    field.value = field.value ? `${field.value}\n\n${markdown}` : markdown
+    field.value = `${field.value}\n\n${markdown}`
     field.dispatchEvent(new Event("input", { bubbles: true }))
+    field.dispatchEvent(new Event("change", { bubbles: true }))
+    field.focus()
+    showInsertResult("inserted")
+  }
+
+  // Scoped to this element's subtree only (never document): a keydown only reaches here when focus is inside the panel.
+  function handlePanelKeyDown(event: KeyboardEvent<HTMLDivElement>): void {
+    if (event.key === "Escape") onCollapse()
   }
 
   return (
-    <div className="prp-panel" role="complementary" aria-label="PR Preflight checklist" ref={panelRef}>
+    <div className="prp-panel" role="complementary" aria-label="PR Preflight checklist" ref={panelRef} onKeyDown={handlePanelKeyDown}>
       <div className="prp-panel-header">
         <div className="prp-panel-title">
           <span className="prp-panel-repo">
@@ -188,7 +213,7 @@ export function Panel({ compareUrl, loadState, stats, findings, errorMessage, er
           </button>
           {bodyFieldExists && (
             <button type="button" className="prp-insert-description" onClick={handleInsert} disabled={!isReady}>
-              Insert into description
+              {insertButtonLabel}
             </button>
           )}
         </div>
