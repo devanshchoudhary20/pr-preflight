@@ -1,6 +1,7 @@
 import type { DiffFile } from "../diff"
 import type { Finding, FindingItem } from "./types"
-import { basename, stripAddedPrefix } from "./utils"
+import { basename } from "./utils"
+import { plural } from "../text"
 
 interface LockfilePair {
   manifest: string
@@ -19,11 +20,10 @@ export const LOCKFILE_NAMES = new Set(LOCKFILE_PAIRS.flatMap((pair) => pair.lock
 
 const DEPENDENCY_MARKERS = ["dependencies", "devDependencies", "peerDependencies", "[dependencies]", "require", "gem "]
 
+// Scans the whole hunk (context + added + deleted lines), not just addedLines, so a version bump inside an
+// already-existing "dependencies"/"require (" block still matches even though the marker itself is unchanged context.
 function manifestTouchesDependencies(file: DiffFile): boolean {
-  return file.addedLines.some((addedLine) => {
-    const content = stripAddedPrefix(addedLine.content)
-    return DEPENDENCY_MARKERS.some((marker) => content.includes(marker))
-  })
+  return DEPENDENCY_MARKERS.some((marker) => file.hunkText.includes(marker))
 }
 
 export function checkLockfileDrift(files: DiffFile[]): Finding {
@@ -43,7 +43,7 @@ export function checkLockfileDrift(files: DiffFile[]): Finding {
   const level = items.length > 0 ? "warn" : "pass"
   let title: string
   if (level === "warn") {
-    title = `${items.length} manifest${items.length === 1 ? "" : "s"} changed without a paired lockfile update`
+    title = `${plural(items.length, "manifest")} changed without a paired lockfile update`
   } else if (notes.length > 0) {
     title = `Lockfile updated without a manifest change (${notes.join("; ")})`
   } else {

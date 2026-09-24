@@ -6,7 +6,7 @@ import { loadTicks, setTick } from "../lib/ticks"
 import { formatFindingsAsMarkdown } from "./markdown"
 import { selectors } from "../lib/selectors"
 import { CheckRow } from "./CheckRow"
-import { EMPTY_DIFF_COPY, RUNNING_CHECKS_COPY, pluralFiles } from "./copy"
+import { EMPTY_DIFF_COPY, FETCHING_DIFF_COPY, pluralFiles } from "./copy"
 
 export type PanelLoadState = "loading" | "error" | "empty" | "ready"
 
@@ -34,15 +34,15 @@ export function Panel({ compareUrl, loadState, stats, findings, errorMessage, er
   const owner = compareUrl?.owner ?? "unknown"
   const repo = compareUrl?.repo ?? "repo"
   const range = compareUrl?.range ?? "this branch"
-  const additions = stats?.additions ?? 0
-  const deletions = stats?.deletions ?? 0
 
   const isLoading = loadState === "loading"
   const isError = loadState === "error"
   const isEmptyDiff = loadState === "empty"
   const isReady = loadState === "ready"
   const sortedFindings = isReady && findings ? sortFindingsBySeverity(findings) : []
-  const statsLine = isReady ? `${pluralFiles(stats?.files ?? 0)} +${additions} −${deletions}` : ""
+  // stats can be null on the DOM-fallback-failed path even while loadState is "ready" (synthetic diff-too-large finding); omit the line entirely rather than show 0s.
+  const showStats = isReady && stats !== null
+  const statsLine = showStats ? `${pluralFiles(stats.files)} +${stats.additions} −${stats.deletions}` : ""
   const copyButtonLabel = copyState === "copied" ? "Copied" : "Copy as markdown"
 
   useEffect(() => {
@@ -101,7 +101,7 @@ export function Panel({ compareUrl, loadState, stats, findings, errorMessage, er
             {owner}/{repo}
           </span>
           <span className="prp-panel-range">{range}</span>
-          {isReady && <span className="prp-panel-stats">{statsLine}</span>}
+          {showStats && <span className="prp-panel-stats">{statsLine}</span>}
         </div>
         <button type="button" className="prp-panel-collapse" onClick={onCollapse} aria-label="Collapse panel">
           ×
@@ -111,7 +111,7 @@ export function Panel({ compareUrl, loadState, stats, findings, errorMessage, er
         {isLoading && (
           <>
             <p className="prp-panel-status" aria-live="polite">
-              {RUNNING_CHECKS_COPY}
+              {FETCHING_DIFF_COPY}
             </p>
             <ul className="prp-row-list">
               {SKELETON_ROW_KEYS.map((key) => (

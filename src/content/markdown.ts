@@ -1,14 +1,11 @@
 import type { Finding, FindingItem } from "../lib/checks/types"
-import { truncateSnippet } from "../lib/checks/utils"
-import { UNKNOWN_FILE_FALLBACK } from "./copy"
+import { formatItem } from "../lib/checks/format"
 
 // item.snippet is already the pattern name (never the raw match) for the secrets check, so this sub-bullet is safe to paste publicly.
 function formatItemLine(item: FindingItem): string {
-  const path = item.path.trim() || UNKNOWN_FILE_FALLBACK
-  const lineSuffix = typeof item.line === "number" ? `:${item.line}` : ""
-  const snippet = item.snippet?.trim()
-  const snippetSuffix = snippet ? ` — ${truncateSnippet(snippet)}` : ""
-  return `  - ${path}${lineSuffix}${snippetSuffix}`
+  const { label, snippet } = formatItem(item)
+  const snippetSuffix = snippet ? ` — ${snippet}` : ""
+  return `  - ${label}${snippetSuffix}`
 }
 
 export function formatFindingsAsMarkdown(findings: Finding[], checkedIds: Set<string>): string {

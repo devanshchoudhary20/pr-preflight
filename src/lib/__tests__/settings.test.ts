@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest"
 import { installChromeStorageStub } from "./chromeStorageStub"
-import { loadConfig, saveConfig, parseGlobLines } from "../settings"
+import { loadConfig, saveConfig, parseGlobLines, parseThresholdInput } from "../settings"
 import { DEFAULT_CONFIG } from "../checks/types"
 
 beforeEach(() => {
@@ -28,5 +28,15 @@ describe("parseGlobLines", () => {
     const { valid, invalid } = parseGlobLines("dist/**\nnot a glob\n\n*.snap\n")
     expect(valid).toEqual(["dist/**", "*.snap"])
     expect(invalid).toEqual(["not a glob"])
+  })
+})
+
+describe("parseThresholdInput", () => {
+  it("rejects empty, non-finite, and negative input, and accepts a valid non-negative number", () => {
+    expect(parseThresholdInput("")).toBeNull()
+    expect(parseThresholdInput("not a number")).toBeNull()
+    expect(parseThresholdInput("-5")).toBeNull()
+    expect(parseThresholdInput("400")).toBe(400)
+    expect(parseThresholdInput("0")).toBe(0)
   })
 })

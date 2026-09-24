@@ -1,10 +1,13 @@
+import { redactSecrets } from "./secrets"
+
 // parse-diff keeps the unified-diff "+" marker on addedLines[].content; strip it so anchored regexes (e.g. "^\s*print\(") work.
 export function stripAddedPrefix(content: string): string {
   return content.startsWith("+") ? content.slice(1) : content
 }
 
+// Redaction runs before truncation so a secret can't survive by falling past the 120-char cut point.
 export function truncateSnippet(text: string, max = 120): string {
-  const trimmed = text.trim()
+  const trimmed = redactSecrets(text.trim())
   if (trimmed.length <= max) return trimmed
   return `${trimmed.slice(0, max)}…`
 }

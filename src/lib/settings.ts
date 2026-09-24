@@ -57,6 +57,13 @@ export function parseGlobLines(text: string): ParsedGlobLines {
   return { valid, invalid }
 }
 
+// Number("") is 0 (finite, non-negative), so an emptied input would silently save a 0 threshold without this guard.
+export function parseThresholdInput(raw: string): number | null {
+  const parsed = Number(raw)
+  if (raw.trim() === "" || !Number.isFinite(parsed) || parsed < 0) return null
+  return parsed
+}
+
 export function onConfigChange(cb: (config: CheckConfig) => void): () => void {
   function listener(changes: Record<string, chrome.storage.StorageChange>, areaName: string): void {
     if (areaName !== "sync") return

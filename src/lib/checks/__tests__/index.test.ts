@@ -57,6 +57,40 @@ index 0000000..1111111
     const todo = findings.find((f) => f.id === "todo-markers")
     expect(todo?.level).toBe("pass")
   })
+
+  function todoDiffAt(path: string): string {
+    return `diff --git a/${path} b/${path}
+new file mode 100644
+index 0000000..1111111
+--- /dev/null
++++ b/${path}
+@@ -0,0 +1,1 @@
++// TODO leftover
+`
+  }
+
+  it("ignores a slash-less glob at any depth (packages/a/yarn.lock via *.lock)", () => {
+    const findings = runChecks(parseDiff(todoDiffAt("packages/a/yarn.lock")), DEFAULT_CONFIG)
+    expect(findings.find((f) => f.id === "todo-markers")?.level).toBe("pass")
+  })
+
+  it("ignores a slash-less glob at any depth (src/x.js.map via *.map)", () => {
+    const findings = runChecks(parseDiff(todoDiffAt("src/x.js.map")), DEFAULT_CONFIG)
+    expect(findings.find((f) => f.id === "todo-markers")?.level).toBe("pass")
+  })
+
+  it("ignores a slash-less glob at any depth (a/b/foo.min.js via *.min.*)", () => {
+    const findings = runChecks(parseDiff(todoDiffAt("a/b/foo.min.js")), DEFAULT_CONFIG)
+    expect(findings.find((f) => f.id === "todo-markers")?.level).toBe("pass")
+  })
+
+  it("keeps a slash-containing glob path-anchored: dist/** matches dist/x.js but not src/dist/x.js", () => {
+    const matched = runChecks(parseDiff(todoDiffAt("dist/x.js")), DEFAULT_CONFIG)
+    expect(matched.find((f) => f.id === "todo-markers")?.level).toBe("pass")
+
+    const notMatched = runChecks(parseDiff(todoDiffAt("src/dist/x.js")), DEFAULT_CONFIG)
+    expect(notMatched.find((f) => f.id === "todo-markers")?.level).toBe("warn")
+  })
 })
 
 describe("sortFindingsBySeverity", () => {

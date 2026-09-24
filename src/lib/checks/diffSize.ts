@@ -1,8 +1,9 @@
 import type { DiffFile } from "../diff"
 import type { CheckConfig, Finding } from "./types"
+import { plural } from "../text"
 
 export function checkDiffSize(files: DiffFile[], config: CheckConfig): Finding {
-  const changedLines = files.reduce((sum, file) => sum + (file.additions ?? 0) + (file.deletions ?? 0), 0)
+  const changedLines = files.reduce((sum, file) => sum + file.additions + file.deletions, 0)
   const fileCount = files.length
   const { warnLines, flagLines, warnFiles, flagFiles } = config.diffSize
 
@@ -10,7 +11,7 @@ export function checkDiffSize(files: DiffFile[], config: CheckConfig): Finding {
   const isWarn = !isFlag && (changedLines > warnLines || fileCount > warnFiles)
   const level = isFlag ? "flag" : isWarn ? "warn" : "pass"
 
-  const fileWord = `${fileCount} file${fileCount === 1 ? "" : "s"}`
+  const fileWord = plural(fileCount, "file")
   const title =
     level === "pass"
       ? `Diff size is reasonable (${fileWord}, ${changedLines} changed lines)`

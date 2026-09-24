@@ -1,17 +1,11 @@
 import { createRoot, type Root } from "react-dom/client"
 import { ContentApp } from "./ContentApp"
 import { parseCompareUrl, type CompareUrl } from "../lib/url"
+import { detectTheme } from "../lib/theme"
 import tokensCss from "../styles/tokens.css?inline"
 import contentCss from "./content.css?inline"
 
 export const HOST_ID = "pr-preflight-host"
-
-function detectTheme(): "light" | "dark" {
-  const mode = document.documentElement.getAttribute("data-color-mode")
-  if (mode === "dark") return "dark"
-  if (mode === "light") return "light"
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
-}
 
 export function compareUrlEquals(a: CompareUrl | null, b: CompareUrl | null): boolean {
   if (a === b) return true
@@ -26,6 +20,12 @@ export function createNavigationController() {
 
   function mountHost(): Root {
     if (root && document.getElementById(HOST_ID)) return root
+    // Turbo's body swap can remove the host element while `root` still references its now-detached shadow tree; unmount
+    // it first so the old React root's listeners don't leak before a fresh host takes its place.
+    if (root) {
+      root.unmount()
+      root = null
+    }
 
     const host = document.createElement("div")
     host.id = HOST_ID
@@ -54,7 +54,9 @@ export function createNavigationController() {
   // Remounts (not re-renders) via a key on owner/repo/range so a branch switch resets ContentApp state.
   function handleNavigation(): void {
     const nextUrl = parseCompareUrl(location.pathname)
-    if (compareUrlEquals(currentCompareUrl, nextUrl)) return
+    // Same URL as last time can still mean a stale mount: Turbo swapped the body and removed the host mid-session.
+    const hostMissing = currentCompareUrl !== null && !document.getElementById(HOST_ID)
+    if (compareUrlEquals(currentCompareUrl, nextUrl) && !hostMissing) return
     currentCompareUrl = nextUrl
     if (!nextUrl) {
       unmountHost()

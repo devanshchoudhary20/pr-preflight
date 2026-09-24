@@ -10,8 +10,11 @@ import { checkTestsMissing } from "./testsMissing"
 import { checkDebugLeftovers } from "./debugLeftovers"
 import { checkLockfileDrift, LOCKFILE_NAMES } from "./lockfileDrift"
 
+// picomatch's basename:true forces EVERY pattern (including "dist/**") to test against just the path's basename,
+// which breaks path-anchored globstars (see node_modules/picomatch/lib/picomatch.js:148). So basename mode is opted
+// into per-glob: a slash-less glob (e.g. "*.lock") matches at any depth, a slash-containing glob stays path-anchored.
 function isIgnored(path: string, globs: string[]): boolean {
-  return globs.some((glob) => picomatch.isMatch(path, glob, { dot: true }))
+  return globs.some((glob) => picomatch.isMatch(path, glob, glob.includes("/") ? { dot: true } : { dot: true, basename: true }))
 }
 
 export function runChecks(files: DiffFile[], config: CheckConfig = DEFAULT_CONFIG): Finding[] {

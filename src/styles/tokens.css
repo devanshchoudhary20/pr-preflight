@@ -34,9 +34,13 @@
 }
 
 /* data-theme is set on the shadow host / <html> at mount time, read from
-   GitHub's own data-color-mode attribute (fallback: prefers-color-scheme). */
+   GitHub's own data-color-mode attribute (fallback: prefers-color-scheme).
+   The content script sets it on the shadow host itself (:host); popup/options
+   set it on document.documentElement, so .prp-root there is a plain light-DOM
+   descendant of that <html> rather than the attribute holder. */
 :host([data-theme="dark"]),
-.prp-root[data-theme="dark"] {
+.prp-root[data-theme="dark"],
+html[data-theme="dark"] .prp-root {
   --prp-n0: #0d1117;
   --prp-n1: #161b22;
   --prp-n2: #30363d;

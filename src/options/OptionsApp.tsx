@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ChangeEvent } from "react"
 import { DEFAULT_CONFIG, type CheckConfig, type CheckId } from "../lib/checks/types"
-import { loadConfig, saveConfig, parseGlobLines } from "../lib/settings"
+import { loadConfig, saveConfig, parseGlobLines, parseThresholdInput } from "../lib/settings"
 import "./options.css"
 
 const CHECK_ORDER: CheckId[] = ["diff-size", "todo-markers", "secrets", "tests-missing", "debug-leftovers", "lockfile-drift"]
@@ -91,10 +91,10 @@ export function OptionsApp() {
   }
 
   function handleThresholdChange(field: "warnLines" | "flagLines", e: ChangeEvent<HTMLInputElement>): void {
-    const parsed = Number(e.target.value)
-    const safeValue = Number.isFinite(parsed) ? parsed : DEFAULT_CONFIG.diffSize[field]
-    setConfig((current) => ({ ...current, diffSize: { ...current.diffSize, [field]: safeValue } }))
-    scheduleSave(field, () => saveConfig({ diffSize: { [field]: safeValue } }))
+    const parsed = parseThresholdInput(e.target.value)
+    if (parsed === null) return
+    setConfig((current) => ({ ...current, diffSize: { ...current.diffSize, [field]: parsed } }))
+    scheduleSave(field, () => saveConfig({ diffSize: { [field]: parsed } }))
   }
 
   function handleGlobsChange(e: ChangeEvent<HTMLTextAreaElement>): void {
@@ -169,7 +169,7 @@ export function OptionsApp() {
           <label key={id} className="prp-options-toggle">
             <input
               type="checkbox"
-              checked={config.enabled[id] ?? DEFAULT_CONFIG.enabled[id]}
+              checked={config.enabled[id]}
               disabled={loading}
               onChange={(e) => handleToggle(id, e.target.checked)}
             />

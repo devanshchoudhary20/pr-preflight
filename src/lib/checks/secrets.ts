@@ -19,6 +19,15 @@ const SECRET_PATTERNS: { name: string; pattern: RegExp }[] = [
   }
 ]
 
+// Applied to every snippet path (todoMarkers, debugLeftovers, etc.), not just this check's own items: a TODO or
+// debug-print line can still contain a live secret, and the panel/clipboard must never carry the raw match.
+export function redactSecrets(text: string): string {
+  return SECRET_PATTERNS.reduce(
+    (redacted, { name, pattern }) => redacted.replace(new RegExp(pattern.source, pattern.flags.includes("g") ? pattern.flags : `${pattern.flags}g`), `[redacted ${name}]`),
+    text
+  )
+}
+
 function matchEnvFile(path: string): boolean {
   const name = basename(path)
   if (name === ".env.example") return false

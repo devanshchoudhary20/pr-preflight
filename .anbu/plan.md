@@ -81,6 +81,8 @@ All run on `parse-diff` output. Each returns `{ id, level: "pass" | "warn" | "fl
 | 5 | Debug leftovers | added lines matching `console\.(log\|debug\|trace)\(`, `\bdebugger\b`, `binding\.pry`, `byebug`, `\bdd\(`, `var_dump\(`, and `^\s*print\(` in `.py` only. Skipped in test files. | warn |
 | 6 | Lockfile drift | pairs: `package.json` ↔ any of `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`, `bun.lock`, `bun.lockb`; `pyproject.toml` ↔ `poetry.lock`, `uv.lock`; `Cargo.toml` ↔ `Cargo.lock`; `go.mod` ↔ `go.sum`; `Gemfile` ↔ `Gemfile.lock`. warn when the manifest changed and its hunk text touches `dependencies`, `devDependencies`, `peerDependencies`, `[dependencies]`, `require`, or `gem ` but no paired lockfile changed. Lockfile changed without manifest is info (pass with a note). Lockfiles are exempt from the ignore list for this check only. | warn |
 
+Intentional drift: `src/lib/checks/utils.ts`'s test-dir patterns anchor with `(^|/)` (e.g. `(^|/)tests?/`) rather than the bare `/tests?/` shorthand above, so a top-level `tests/` directory still matches. `parse-diff` paths never carry a leading slash, so the anchor only widens the match at the start of the string, never past a real directory boundary elsewhere in the path.
+
 Checklist never blocks the submit button. It informs. A finding can be ticked off; ticks persist per `owner/repo/range` in `chrome.storage.local` for 7 days.
 
 ## Screens (names only)

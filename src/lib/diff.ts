@@ -1,4 +1,5 @@
 import parseDiffLib from "parse-diff"
+import { UNKNOWN_FILE_FALLBACK } from "./text"
 
 export interface AddedLine {
   lineNo?: number
@@ -10,6 +11,7 @@ export interface DiffFile {
   additions: number
   deletions: number
   addedLines: AddedLine[]
+  hunkText: string
 }
 
 export interface DiffStats {
@@ -103,25 +105,33 @@ export async function fetchDiff(
 function resolvePath(file: parseDiffLib.File): string {
   if (file.to && file.to !== "/dev/null") return file.to
   if (file.from && file.from !== "/dev/null") return file.from
-  return "(unknown file)"
+  return UNKNOWN_FILE_FALLBACK
+}
+
+// Strips the leading unified-diff marker ("+", "-", or " ") so hunkText reads as plain source, not diff syntax.
+function stripChangeMarker(content: string): string {
+  return /^[+\- ]/.test(content) ? content.slice(1) : content
 }
 
 export function parseDiff(text: string): DiffFile[] {
   const files = parseDiffLib(text)
   return files.map((file) => {
     const addedLines: AddedLine[] = []
+    const hunkLines: string[] = []
     for (const chunk of file.chunks) {
       for (const change of chunk.changes) {
         if (change.type === "add") {
           addedLines.push({ lineNo: change.ln, content: change.content })
         }
+        hunkLines.push(stripChangeMarker(change.content))
       }
     }
     return {
       path: resolvePath(file),
       additions: file.additions ?? 0,
       deletions: file.deletions ?? 0,
-      addedLines
+      addedLines,
+      hunkText: hunkLines.join("\n")
     }
   })
 }

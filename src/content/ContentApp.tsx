@@ -36,6 +36,7 @@ function isRecoverableFetchError(err: DiffFetchError): boolean {
 
 export function ContentApp({ compareUrl }: ContentAppProps) {
   const [expanded, setExpanded] = useState(false)
+  const rootRef = useRef<HTMLDivElement>(null)
   const [loadState, setLoadState] = useState<PanelLoadState>("loading")
   const [stats, setStats] = useState<DiffStats | null>(null)
   const [files, setFiles] = useState<DiffFile[] | null>(null)
@@ -136,7 +137,8 @@ export function ContentApp({ compareUrl }: ContentAppProps) {
   }, [loadState, worst, reviewCount])
 
   useEffect(() => {
-    function handleMessage(message: unknown, _sender: chrome.runtime.MessageSender, sendResponse: (response: TabState | { ok: true }) => void): void {
+    function handleMessage(message: unknown, sender: chrome.runtime.MessageSender, sendResponse: (response: TabState | { ok: true }) => void): void {
+      if (sender.id !== chrome.runtime.id) return
       const type = message && typeof message === "object" ? (message as { type?: string }).type : undefined
       if (type === "prp:state") {
         sendResponse(tabStateRef.current)
@@ -149,8 +151,18 @@ export function ContentApp({ compareUrl }: ContentAppProps) {
     return () => chrome.runtime.onMessage.removeListener(handleMessage)
   }, [])
 
+  // Collapse on any click outside the panel; composedPath (not target) so a click inside the shadow DOM is detected correctly.
+  useEffect(() => {
+    if (!expanded) return
+    function handleOutsideClick(event: MouseEvent): void {
+      if (rootRef.current && !event.composedPath().includes(rootRef.current)) setExpanded(false)
+    }
+    document.addEventListener("mousedown", handleOutsideClick)
+    return () => document.removeEventListener("mousedown", handleOutsideClick)
+  }, [expanded])
+
   return (
-    <>
+    <div ref={rootRef}>
       {!expanded && (
         <Badge state={badgeState} label="PR Preflight" count={reviewCount} severity={worst} onClick={() => setExpanded(true)} />
       )}
@@ -166,6 +178,6 @@ export function ContentApp({ compareUrl }: ContentAppProps) {
           onCollapse={() => setExpanded(false)}
         />
       )}
-    </>
+    </div>
   )
 }
