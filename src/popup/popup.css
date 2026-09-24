@@ -1,0 +1,56 @@
+.prp-popup {
+  padding: var(--prp-space-md);
+  font-family: var(--prp-font-ui);
+  font-size: 13px;
+  color: var(--prp-n4);
+}
+
+.prp-popup-status {
+  margin: 0 0 var(--prp-space-md);
+  color: var(--prp-n3);
+}
+
+.prp-popup-state {
+  display: flex;
+  align-items: center;
+  gap: var(--prp-space-xs);
+  margin-bottom: var(--prp-space-md);
+}
+
+.prp-popup-actions {
+  display: flex;
+  gap: var(--prp-space-sm);
+}
+
+.prp-popup-actions button {
+  flex: 1;
+  padding: var(--prp-space-xs) var(--prp-space-sm);
+  border: 1px solid var(--prp-n2);
+  border-radius: var(--prp-radius-sm);
+  background: var(--prp-n1);
+  color: var(--prp-n4);
+  cursor: pointer;
+}
+
+.prp-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--prp-radius-pill);
+}
+
+.prp-dot-neutral {
+  background: var(--prp-n3);
+}
+
+.prp-dot-pass {
+  background: var(--prp-pass-fg);
+}
+
+.prp-dot-warn {
+  background: var(--prp-warn-fg);
+}
+
+.prp-dot-flag {
+  background: var(--prp-flag-fg);
+}

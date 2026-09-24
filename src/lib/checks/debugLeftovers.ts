@@ -1,6 +1,7 @@
 import type { DiffFile } from "../diff"
 import type { Finding, FindingItem } from "./types"
 import { isTestFile, stripAddedPrefix, truncateSnippet } from "./utils"
+import { plural } from "../../content/copy"
 
 const GENERAL_PATTERNS = [
   /console\.(log|debug|trace)\(/,
@@ -26,9 +27,6 @@ export function checkDebugLeftovers(files: DiffFile[]): Finding {
     }
   }
   const level = items.length > 0 ? "warn" : "pass"
-  const title =
-    level === "warn"
-      ? `${items.length} debug leftover${items.length === 1 ? "" : "s"} found`
-      : "No debug leftovers found"
+  const title = level === "warn" ? `${plural(items.length, "debug leftover")} found` : "No debug leftovers found"
   return { id: "debug-leftovers", level, title, items }
 }

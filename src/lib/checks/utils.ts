@@ -1,5 +1,4 @@
-// parse-diff keeps the unified-diff "+" marker on addedLines[].content; strip
-// it before pattern matching so anchored regexes (e.g. "^\s*print\(") work.
+// parse-diff keeps the unified-diff "+" marker on addedLines[].content; strip it so anchored regexes (e.g. "^\s*print\(") work.
 export function stripAddedPrefix(content: string): string {
   return content.startsWith("+") ? content.slice(1) : content
 }
@@ -12,9 +11,7 @@ export function truncateSnippet(text: string, max = 120): string {
 
 const SOURCE_FILE_PATTERN = /\.(ts|tsx|js|jsx|mjs|py|go|rb|rs|java|kt|swift|php|cs)$/
 
-// Plan's shorthand ("/tests?/") assumes a path separator on both sides; real
-// diff paths have no leading slash, so anchor the left side at the string
-// start too or a top-level tests/ directory would never match.
+// Plan's "/tests?/" shorthand assumes a separator on both sides; anchor the left side too or a top-level tests/ dir won't match.
 const TEST_FILE_PATTERNS = [
   /\.(test|spec)\.[a-z]+$/,
   /(^|\/)__tests__\//,

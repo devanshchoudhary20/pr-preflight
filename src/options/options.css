@@ -1,0 +1,76 @@
+.prp-options {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: var(--prp-space-xl);
+  font-family: var(--prp-font-ui);
+  color: var(--prp-n4);
+}
+
+.prp-options h1 {
+  font-size: 18px;
+  margin: 0 0 var(--prp-space-lg);
+}
+
+.prp-options-status {
+  color: var(--prp-n3);
+  font-size: 13px;
+}
+
+.prp-options-banner {
+  padding: var(--prp-space-sm) var(--prp-space-md);
+  margin-bottom: var(--prp-space-md);
+  border-radius: var(--prp-radius-sm);
+  background: var(--prp-flag-bg);
+  color: var(--prp-flag-fg);
+  font-size: 13px;
+}
+
+.prp-options-section {
+  margin-bottom: var(--prp-space-xl);
+}
+
+.prp-options-section h2 {
+  font-size: 14px;
+  margin: 0 0 var(--prp-space-sm);
+}
+
+.prp-options-field {
+  display: flex;
+  align-items: center;
+  gap: var(--prp-space-sm);
+  margin-bottom: var(--prp-space-sm);
+  font-size: 13px;
+}
+
+.prp-options-field input {
+  width: 80px;
+}
+
+.prp-options-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--prp-space-sm);
+  margin-bottom: var(--prp-space-xs);
+  font-size: 13px;
+}
+
+.prp-options-globs {
+  width: 100%;
+  font-family: var(--prp-font-mono);
+  font-size: 12px;
+  padding: var(--prp-space-sm);
+  border: 1px solid var(--prp-n2);
+  border-radius: var(--prp-radius-sm);
+  box-sizing: border-box;
+}
+
+.prp-options-saved {
+  color: var(--prp-pass-fg);
+  font-size: 12px;
+}
+
+.prp-options-invalid {
+  color: var(--prp-flag-fg);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}

@@ -16,12 +16,8 @@ function isIgnored(path: string, globs: string[]): boolean {
 
 export function runChecks(files: DiffFile[], config: CheckConfig = DEFAULT_CONFIG): Finding[] {
   const kept = files.filter((file) => !isIgnored(file.path, config.ignoreGlobs))
-  // Lockfiles are exempt from the ignore list for check 6 only: the default
-  // ignores hide them from the other five checks (generated-file noise) but
-  // check 6 is specifically about them.
-  const lockfileScope = files.filter(
-    (file) => !isIgnored(file.path, config.ignoreGlobs) || LOCKFILE_NAMES.has(basename(file.path))
-  )
+  // Lockfiles are exempt from the ignore list for check 6 only, so add back any ignored lockfile-named files onto "kept".
+  const lockfileScope = [...kept, ...files.filter((file) => !kept.includes(file) && LOCKFILE_NAMES.has(basename(file.path)))]
 
   const findings: Finding[] = []
   if (config.enabled["diff-size"]) findings.push(checkDiffSize(kept, config))
@@ -39,8 +35,7 @@ export function sortFindingsBySeverity(findings: Finding[]): Finding[] {
   return [...findings].sort((a, b) => LEVEL_PRIORITY[a.level] - LEVEL_PRIORITY[b.level])
 }
 
-// null means every finding passed; used by the badge and popup to pick
-// between the "All clear" / "{n} to review" copy without recomputing this.
+// null means every finding passed; used by the badge and popup to pick the "all clear" vs "{n} to review" copy.
 export function worstLevel(findings: Finding[]): FindingLevel | null {
   if (findings.some((f) => f.level === "flag")) return "flag"
   if (findings.some((f) => f.level === "warn")) return "warn"

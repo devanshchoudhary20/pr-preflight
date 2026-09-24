@@ -4,7 +4,10 @@ export const selectors = {
   fileRow: "#files_bucket .file[data-tagsearch-path]",
   filePathAttr: "data-tagsearch-path",
   addedLine: ".blob-code-addition .blob-code-inner",
-  diffStat: ".diffstat"
+  diffStat: ".diffstat",
+  // Unverified on the live page (chunk 1 spike did not confirm these); "Insert into description" degrades to absent when missing.
+  pullRequestTitle: "#pull_request_title",
+  pullRequestBody: "#pull_request_body"
 }
 
 // No-ops silently if the DOM fallback selector is absent (React diff DOM

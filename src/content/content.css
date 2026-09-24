@@ -265,12 +265,31 @@
   border-top: 1px solid var(--prp-n2);
 }
 
-.prp-copy-markdown {
-  width: 100%;
+.prp-panel-footer-actions {
+  display: flex;
+  gap: var(--prp-space-sm);
+}
+
+.prp-copy-markdown,
+.prp-insert-description {
+  flex: 1;
   padding: var(--prp-space-sm);
   border: 1px solid var(--prp-n2);
   border-radius: var(--prp-radius-sm);
   background: var(--prp-n1);
+  color: var(--prp-n4);
+  cursor: pointer;
+}
+
+.prp-copy-markdown:disabled,
+.prp-insert-description:disabled {
   color: var(--prp-n3);
   cursor: not-allowed;
+}
+
+.prp-panel-footer-note {
+  margin: var(--prp-space-xs) 0 0;
+  font-size: 11px;
+  color: var(--prp-n3);
+  text-align: center;
 }

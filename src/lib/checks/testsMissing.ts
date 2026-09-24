@@ -1,6 +1,7 @@
 import type { DiffFile } from "../diff"
 import type { Finding } from "./types"
 import { isSourceFile, isTestFile } from "./utils"
+import { plural } from "../../content/copy"
 
 export function checkTestsMissing(files: DiffFile[]): Finding {
   const sourceFiles = files.filter((file) => isSourceFile(file.path) && !isTestFile(file.path))
@@ -15,7 +16,7 @@ export function checkTestsMissing(files: DiffFile[]): Finding {
   return {
     id: "tests-missing",
     level: "warn",
-    title: `${sourceFiles.length} source file${sourceFiles.length === 1 ? "" : "s"} changed, no tests changed`,
+    title: `${plural(sourceFiles.length, "source file")} changed, no tests changed`,
     items: sourceFiles.map((file) => ({ path: file.path }))
   }
 }

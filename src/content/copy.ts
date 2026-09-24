@@ -4,7 +4,10 @@ export const RUNNING_CHECKS_COPY = "Running checks…"
 export const UNKNOWN_FILE_FALLBACK = "(unknown file)"
 export const NO_PREVIEW_FALLBACK = "(no preview)"
 
+export function plural(n: number, word: string): string {
+  return `${n} ${word}${n === 1 ? "" : "s"}`
+}
+
 export function pluralFiles(n: number): string {
-  const safeCount = Number.isFinite(n) ? n : 0
-  return `${safeCount} file${safeCount === 1 ? "" : "s"} changed`
+  return `${plural(n, "file")} changed`
 }

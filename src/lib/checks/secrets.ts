@@ -1,9 +1,9 @@
 import type { DiffFile } from "../diff"
 import type { Finding, FindingItem } from "./types"
 import { basename, stripAddedPrefix } from "./utils"
+import { plural } from "../../content/copy"
 
-// snippet is the pattern NAME, never the matched text, so a screenshot of
-// the panel is safe to post publicly (screens.md #2 Success).
+// snippet is the pattern NAME, never the matched text, so a screenshot of the panel is safe to post publicly.
 const SECRET_PATTERNS: { name: string; pattern: RegExp }[] = [
   { name: "AWS access key pattern", pattern: /AKIA[0-9A-Z]{16}/ },
   { name: "GitHub token pattern", pattern: /gh[pousr]_[A-Za-z0-9]{36,}/ },
@@ -38,9 +38,6 @@ export function checkSecrets(files: DiffFile[]): Finding {
     }
   }
   const level = items.length > 0 ? "flag" : "pass"
-  const title =
-    level === "flag"
-      ? `${items.length} potential secret${items.length === 1 ? "" : "s"} found`
-      : "No secret patterns found"
+  const title = level === "flag" ? `${plural(items.length, "potential secret")} found` : "No secret patterns found"
   return { id: "secrets", level, title, items }
 }
