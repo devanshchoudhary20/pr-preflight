@@ -1,7 +1,7 @@
 {
   "name": "pr-preflight-extension",
   "private": true,
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A self-review checklist on GitHub's compare page. Six diff checks, no API key, no data leaves github.com.",
   "repository": {
     "type": "git",

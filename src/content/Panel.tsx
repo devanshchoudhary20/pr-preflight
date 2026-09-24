@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import type { CompareUrl } from "../lib/url"
 import type { DiffStats } from "../lib/diff"
 import { sortFindingsBySeverity, type Finding } from "../lib/checks"
@@ -27,7 +27,8 @@ const COPY_CONFIRM_MS = 2000
 export function Panel({ compareUrl, loadState, stats, findings, errorMessage, errorHeading, onRetry, onCollapse }: PanelProps) {
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set())
   const [checkedIds, setCheckedIds] = useState<Set<string>>(new Set())
-  const [copyState, setCopyState] = useState<"idle" | "copied">("idle")
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">("idle")
+  const panelRef = useRef<HTMLDivElement>(null)
   // Read once at mount: the compare/PR form DOM is already present by document_idle, and this id is UNVERIFIED so it degrades to false silently.
   const [bodyFieldExists] = useState(() => !!document.querySelector(selectors.pullRequestBody))
 
@@ -43,7 +44,7 @@ export function Panel({ compareUrl, loadState, stats, findings, errorMessage, er
   // stats can be null on the DOM-fallback-failed path even while loadState is "ready" (synthetic diff-too-large finding); omit the line entirely rather than show 0s.
   const showStats = isReady && stats !== null
   const statsLine = showStats ? `${pluralFiles(stats.files)} +${stats.additions} −${stats.deletions}` : ""
-  const copyButtonLabel = copyState === "copied" ? "Copied" : "Copy as markdown"
+  const copyButtonLabel = copyState === "copied" ? "Copied" : copyState === "failed" ? "Copy failed" : "Copy as markdown"
 
   useEffect(() => {
     if (!compareUrl) return
@@ -77,12 +78,40 @@ export function Panel({ compareUrl, loadState, stats, findings, errorMessage, er
     })
   }
 
+  // execCommand fallback for when clipboard.writeText rejects (unfocused doc, or outside a fresh user-gesture task); textarea mounts in the same root (shadow or document) as the trigger so it stays reachable for selection.
+  function copyViaFallback(markdown: string): boolean {
+    const textarea = document.createElement("textarea")
+    textarea.value = markdown
+    textarea.style.position = "fixed"
+    textarea.style.opacity = "0"
+    const root = panelRef.current?.getRootNode()
+    const mountPoint = root instanceof ShadowRoot ? root : document.body
+    mountPoint.appendChild(textarea)
+    textarea.focus()
+    textarea.select()
+    let succeeded = false
+    try {
+      succeeded = document.execCommand("copy")
+    } catch {
+      succeeded = false
+    }
+    textarea.remove()
+    return succeeded
+  }
+
+  function showCopyResult(state: "copied" | "failed"): void {
+    setCopyState(state)
+    setTimeout(() => setCopyState("idle"), COPY_CONFIRM_MS)
+  }
+
   function handleCopy(): void {
     const markdown = formatFindingsAsMarkdown(sortedFindings, checkedIds)
-    navigator.clipboard.writeText(markdown).then(() => {
-      setCopyState("copied")
-      setTimeout(() => setCopyState("idle"), COPY_CONFIRM_MS)
-    })
+    // No await before writeText: keeps the call inside the click's user-gesture task.
+    const copyPromise = navigator.clipboard?.writeText(markdown) ?? Promise.reject(new Error("clipboard unavailable"))
+    copyPromise.then(
+      () => showCopyResult("copied"),
+      () => showCopyResult(copyViaFallback(markdown) ? "copied" : "failed")
+    )
   }
 
   function handleInsert(): void {
@@ -94,7 +123,7 @@ export function Panel({ compareUrl, loadState, stats, findings, errorMessage, er
   }
 
   return (
-    <div className="prp-panel" role="complementary" aria-label="PR Preflight checklist">
+    <div className="prp-panel" role="complementary" aria-label="PR Preflight checklist" ref={panelRef}>
       <div className="prp-panel-header">
         <div className="prp-panel-title">
           <span className="prp-panel-repo">
