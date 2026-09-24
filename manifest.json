@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "PR Preflight",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A self-review checklist on GitHub's compare page. Six diff checks, no API key, no data leaves github.com.",
   "action": {
     "default_popup": "popup.html",

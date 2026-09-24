@@ -15,3 +15,9 @@ export function scrollToFile(path: string): void {
   const target = document.querySelector(`.file[${selectors.filePathAttr}="${CSS.escape(path)}"]`)
   target?.scrollIntoView({ behavior: "smooth", block: "start" })
 }
+
+// Item paths render as links only when the underlying page can actually be scrolled to; read once, not per-item, since the file list doesn't change while a row is expanded.
+export function existingFilePaths(): Set<string> {
+  const rows = document.querySelectorAll<HTMLElement>(selectors.fileRow)
+  return new Set(Array.from(rows, (row) => row.getAttribute(selectors.filePathAttr) ?? ""))
+}

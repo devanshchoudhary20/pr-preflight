@@ -176,6 +176,7 @@
 
 .prp-pill {
   flex-shrink: 0;
+  margin-left: auto;
   font-size: 11px;
   font-weight: 600;
   padding: 2px var(--prp-space-xs);
@@ -217,20 +218,44 @@
   font-size: 12px;
 }
 
+.prp-row-items-compact .prp-row-item {
+  gap: 0;
+}
+
 .prp-row-item-path {
+  font-family: var(--prp-font-mono);
+  color: var(--prp-n4);
+  overflow-wrap: anywhere;
+}
+
+button.prp-row-item-path-link {
   border: none;
   background: transparent;
-  color: var(--prp-n4);
-  font-family: var(--prp-font-mono);
   text-align: left;
   cursor: pointer;
   padding: 0;
+  text-decoration: none;
+}
+
+button.prp-row-item-path-link:hover {
+  text-decoration: underline;
 }
 
 .prp-row-item-snippet {
   color: var(--prp-n3);
   font-family: var(--prp-font-mono);
   overflow-wrap: anywhere;
+}
+
+.prp-row-item-more-toggle {
+  border: none;
+  background: transparent;
+  color: var(--prp-n3);
+  font-family: var(--prp-font-ui);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
 }
 
 .prp-additions {

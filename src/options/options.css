@@ -1,3 +1,9 @@
+body {
+  margin: 0;
+  background: var(--prp-n0);
+  color: var(--prp-n4);
+}
+
 .prp-options {
   max-width: 480px;
   margin: 0 auto;
