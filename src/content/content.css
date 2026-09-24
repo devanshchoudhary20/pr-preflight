@@ -1,0 +1,34 @@
+.prp-badge {
+  position: fixed;
+  right: var(--prp-space-lg);
+  bottom: var(--prp-space-lg);
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  gap: var(--prp-space-xs);
+  padding: var(--prp-space-sm) var(--prp-space-md);
+  background: var(--prp-n0);
+  border: 1px solid var(--prp-n2);
+  border-radius: var(--prp-radius-pill);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-family: var(--prp-font-ui);
+  font-size: 13px;
+  color: var(--prp-n4);
+  cursor: pointer;
+}
+
+.prp-panel {
+  position: fixed;
+  right: var(--prp-space-lg);
+  bottom: var(--prp-space-lg);
+  z-index: 2147483647;
+  width: 360px;
+  max-height: 70vh;
+  overflow-y: auto;
+  background: var(--prp-n0);
+  border: 1px solid var(--prp-n2);
+  border-radius: var(--prp-radius-md);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  font-family: var(--prp-font-ui);
+  color: var(--prp-n4);
+}

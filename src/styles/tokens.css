@@ -1,0 +1,52 @@
+/* Design tokens for PR Preflight. Matches GitHub Primer's own neutral and
+   semantic values on purpose: the panel is chrome living inside github.com,
+   not a foreign brand, so it borrows the host's vocabulary instead of
+   clashing with the diff colors and CI status dots already on the page. */
+
+:host,
+.prp-root {
+  --prp-font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --prp-font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+  --prp-space-xs: 4px;
+  --prp-space-sm: 8px;
+  --prp-space-md: 12px;
+  --prp-space-lg: 16px;
+  --prp-space-xl: 24px;
+
+  --prp-radius-sm: 4px;
+  --prp-radius-md: 6px;
+  --prp-radius-pill: 999px;
+
+  /* 5-step neutral scale, light values (default) */
+  --prp-n0: #ffffff;
+  --prp-n1: #f6f8fa;
+  --prp-n2: #d0d7de;
+  --prp-n3: #57606a;
+  --prp-n4: #1f2328;
+
+  --prp-pass-fg: #1a7f37;
+  --prp-pass-bg: #dafbe1;
+  --prp-warn-fg: #9a6700;
+  --prp-warn-bg: #fff8c5;
+  --prp-flag-fg: #cf222e;
+  --prp-flag-bg: #ffebe9;
+}
+
+/* data-theme is set on the shadow host / <html> at mount time, read from
+   GitHub's own data-color-mode attribute (fallback: prefers-color-scheme). */
+:host([data-theme="dark"]),
+.prp-root[data-theme="dark"] {
+  --prp-n0: #0d1117;
+  --prp-n1: #161b22;
+  --prp-n2: #30363d;
+  --prp-n3: #8b949e;
+  --prp-n4: #e6edf3;
+
+  --prp-pass-fg: #3fb950;
+  --prp-pass-bg: rgba(46, 160, 67, 0.15);
+  --prp-warn-fg: #d29922;
+  --prp-warn-bg: rgba(187, 128, 9, 0.15);
+  --prp-flag-fg: #f85149;
+  --prp-flag-bg: rgba(248, 81, 73, 0.15);
+}

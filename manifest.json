@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "PR Preflight",
+  "version": "0.1.0",
+  "description": "A self-review checklist on GitHub's compare page. Six diff checks, no API key, no data leaves github.com.",
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "options_page": "options.html",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": ["storage"],
+  "host_permissions": ["https://github.com/*"],
+  "content_scripts": [
+    {
+      "matches": ["https://github.com/*/*/compare/*"],
+      "js": ["src/content/main.tsx"],
+      "run_at": "document_idle"
+    }
+  ]
+}

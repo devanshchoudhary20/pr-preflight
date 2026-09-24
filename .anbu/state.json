@@ -1,0 +1,19 @@
+{
+  "slug": "20260616-pr-preflight-extension",
+  "track": "weekend",
+  "started": "2026-09-24",
+  "flags": { "yolo": false, "cloud": false },
+  "phase": "design",
+  "phases": {
+    "think": { "status": "done", "artifact": ".anbu/plan.md", "done_at": "2026-09-24" },
+    "design": { "status": "in_progress", "artifact": ".anbu/screens.md", "done_at": null },
+    "build": { "status": "pending", "artifact": "git log", "done_at": null, "chunks": [] },
+    "test": { "status": "pending", "artifact": ".anbu/evidence/report.md", "done_at": null },
+    "ship": { "status": "pending", "artifact": "url", "done_at": null, "url": null },
+    "launch": { "status": "pending", "artifact": ".anbu/launch-kit.md", "done_at": null }
+  },
+  "attempts": { "think": 1, "design": 1, "build": {}, "test": {}, "ship": 0, "launch": 0 },
+  "verifier": { "build": null, "test": null, "yellow_items": [] },
+  "paused": null,
+  "tokens_by_phase": {}
+}
