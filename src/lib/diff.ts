@@ -83,8 +83,8 @@ export function diffStats(files: DiffFile[]): DiffStats {
   return files.reduce(
     (acc, file) => ({
       files: acc.files + 1,
-      additions: acc.additions + (file.additions ?? 0),
-      deletions: acc.deletions + (file.deletions ?? 0)
+      additions: acc.additions + file.additions,
+      deletions: acc.deletions + file.deletions
     }),
     { files: 0, additions: 0, deletions: 0 }
   )

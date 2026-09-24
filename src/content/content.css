@@ -114,8 +114,123 @@
 }
 
 .prp-panel-stats {
-  font-size: 13px;
+  font-size: 12px;
   margin: 0;
+  color: var(--prp-n3);
+  font-family: var(--prp-font-mono);
+}
+
+.prp-row-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--prp-space-xs);
+}
+
+.prp-row {
+  border: 1px solid var(--prp-n2);
+  border-radius: var(--prp-radius-sm);
+  padding: var(--prp-space-xs);
+}
+
+.prp-row-skeleton {
+  height: 36px;
+  background: var(--prp-n1);
+  animation: prp-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes prp-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.prp-row-main {
+  display: flex;
+  align-items: center;
+  gap: var(--prp-space-sm);
+}
+
+.prp-row-tick {
+  flex-shrink: 0;
+}
+
+.prp-row-toggle {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--prp-space-sm);
+  border: none;
+  background: transparent;
+  color: var(--prp-n4);
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  padding: var(--prp-space-xs) 0;
+}
+
+.prp-row-toggle:disabled {
+  cursor: default;
+}
+
+.prp-pill {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px var(--prp-space-xs);
+  border-radius: var(--prp-radius-sm);
+}
+
+.prp-pill-pass {
+  color: var(--prp-pass-fg);
+  background: var(--prp-pass-bg);
+}
+
+.prp-pill-warn {
+  color: var(--prp-warn-fg);
+  background: var(--prp-warn-bg);
+}
+
+.prp-pill-flag {
+  color: var(--prp-flag-fg);
+  background: var(--prp-flag-bg);
+}
+
+.prp-row-title {
+  overflow-wrap: anywhere;
+}
+
+.prp-row-items {
+  list-style: none;
+  margin: var(--prp-space-xs) 0 0;
+  padding: 0 0 0 calc(var(--prp-space-lg) + var(--prp-space-sm));
+  display: flex;
+  flex-direction: column;
+  gap: var(--prp-space-xs);
+}
+
+.prp-row-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 12px;
+}
+
+.prp-row-item-path {
+  border: none;
+  background: transparent;
+  color: var(--prp-n4);
+  font-family: var(--prp-font-mono);
+  text-align: left;
+  cursor: pointer;
+  padding: 0;
+}
+
+.prp-row-item-snippet {
+  color: var(--prp-n3);
+  font-family: var(--prp-font-mono);
+  overflow-wrap: anywhere;
 }
 
 .prp-additions {

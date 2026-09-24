@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "parse-diff": "0.12.0",
+    "picomatch": "^4.0.7",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
@@ -19,6 +20,7 @@
     "@crxjs/vite-plugin": "3.0.0",
     "@types/chrome": "0.0.258",
     "@types/node": "20.11.5",
+    "@types/picomatch": "^4.0.3",
     "@types/react": "18.2.48",
     "@types/react-dom": "18.2.18",
     "@vitejs/plugin-react": "4.3.4",
