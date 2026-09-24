@@ -21,7 +21,7 @@
   "host_permissions": ["https://github.com/*"],
   "content_scripts": [
     {
-      "matches": ["https://github.com/*/*/compare/*"],
+      "matches": ["https://github.com/*/*/compare/*", "https://github.com/*/*/pull/new/*"],
       "js": ["src/content/main.tsx"],
       "run_at": "document_idle"
     }

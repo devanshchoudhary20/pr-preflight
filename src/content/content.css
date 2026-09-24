@@ -17,6 +17,37 @@
   cursor: pointer;
 }
 
+.prp-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--prp-radius-pill);
+  flex-shrink: 0;
+}
+
+.prp-dot-neutral {
+  background: var(--prp-n3);
+}
+
+.prp-dot-pass {
+  background: var(--prp-pass-fg);
+}
+
+.prp-dot-warn {
+  background: var(--prp-warn-fg);
+}
+
+.prp-dot-flag {
+  background: var(--prp-flag-fg);
+}
+
+.prp-badge-label {
+  font-weight: 600;
+}
+
+.prp-badge-text {
+  color: var(--prp-n3);
+}
+
 .prp-panel {
   position: fixed;
   right: var(--prp-space-lg);
@@ -31,4 +62,100 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   font-family: var(--prp-font-ui);
   color: var(--prp-n4);
+}
+
+.prp-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--prp-space-sm);
+  padding: var(--prp-space-md);
+  border-bottom: 1px solid var(--prp-n2);
+}
+
+.prp-panel-title {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.prp-panel-repo {
+  font-weight: 600;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.prp-panel-range {
+  font-family: var(--prp-font-mono);
+  font-size: 12px;
+  color: var(--prp-n3);
+  overflow-wrap: anywhere;
+}
+
+.prp-panel-collapse {
+  border: none;
+  background: transparent;
+  color: var(--prp-n3);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--prp-space-xs);
+}
+
+.prp-panel-body {
+  padding: var(--prp-space-md);
+}
+
+.prp-panel-status {
+  color: var(--prp-n3);
+  font-size: 13px;
+  margin: 0;
+}
+
+.prp-panel-stats {
+  font-size: 13px;
+  margin: 0;
+}
+
+.prp-additions {
+  color: var(--prp-pass-fg);
+  font-family: var(--prp-font-mono);
+}
+
+.prp-deletions {
+  color: var(--prp-flag-fg);
+  font-family: var(--prp-font-mono);
+}
+
+.prp-panel-error {
+  display: flex;
+  flex-direction: column;
+  gap: var(--prp-space-sm);
+  font-size: 13px;
+}
+
+.prp-panel-error button {
+  align-self: flex-start;
+  padding: var(--prp-space-xs) var(--prp-space-md);
+  border: 1px solid var(--prp-n2);
+  border-radius: var(--prp-radius-sm);
+  background: var(--prp-n1);
+  color: var(--prp-n4);
+  cursor: pointer;
+}
+
+.prp-panel-footer {
+  padding: var(--prp-space-md);
+  border-top: 1px solid var(--prp-n2);
+}
+
+.prp-copy-markdown {
+  width: 100%;
+  padding: var(--prp-space-sm);
+  border: 1px solid var(--prp-n2);
+  border-radius: var(--prp-radius-sm);
+  background: var(--prp-n1);
+  color: var(--prp-n3);
+  cursor: not-allowed;
 }
