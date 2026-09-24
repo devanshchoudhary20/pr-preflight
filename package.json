@@ -18,7 +18,8 @@
     "test": "vitest run",
     "icons": "node scripts/icons.mjs",
     "package": "node scripts/package.mjs",
-    "e2e": "node scripts/e2e-extension.mjs"
+    "e2e": "node scripts/e2e-extension.mjs",
+    "store-shots": "node scripts/store-shots.mjs"
   },
   "dependencies": {
     "parse-diff": "0.12.0",
