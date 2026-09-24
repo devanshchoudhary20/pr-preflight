@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { describe, expect, it, beforeEach, afterEach, vi } from "vitest"
 import { parseDomDiff } from "../domDiff"
+import { checkLockfileDrift } from "../checks/lockfileDrift"
 
 const FIXTURE = `
   <div id="files_bucket">
@@ -79,5 +80,27 @@ describe("parseDomDiff", () => {
 
   afterEach(() => {
     vi.useRealTimers()
+  })
+
+  it("feeds the DOM fallback's hunkText into checkLockfileDrift, which warns on a manifest with no paired lockfile", async () => {
+    document.body.innerHTML = `
+      <div id="files_bucket">
+        <div class="file" data-tagsearch-path="package.json">
+          <span class="diffstat" aria-label="1 addition &amp; 0 deletions"></span>
+          <table>
+            <tbody>
+              <tr>
+                <td data-line-number=""></td>
+                <td data-line-number="2"></td>
+                <td class="blob-code blob-code-addition"><span class="blob-code-inner">+  "dependencies": {</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `
+    const files = await parseDomDiff()
+    const finding = checkLockfileDrift(files)
+    expect(finding.level).toBe("warn")
   })
 })

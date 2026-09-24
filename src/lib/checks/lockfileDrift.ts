@@ -20,8 +20,7 @@ export const LOCKFILE_NAMES = new Set(LOCKFILE_PAIRS.flatMap((pair) => pair.lock
 
 const DEPENDENCY_MARKERS = ["dependencies", "devDependencies", "peerDependencies", "[dependencies]", "require", "gem "]
 
-// Scans the whole hunk (context + added + deleted lines), not just addedLines, so a version bump inside an
-// already-existing "dependencies"/"require (" block still matches even though the marker itself is unchanged context.
+// Scans the whole hunk, not just addedLines, so a version bump inside an existing "dependencies"/"require (" block still matches.
 function manifestTouchesDependencies(file: DiffFile): boolean {
   return DEPENDENCY_MARKERS.some((marker) => file.hunkText.includes(marker))
 }

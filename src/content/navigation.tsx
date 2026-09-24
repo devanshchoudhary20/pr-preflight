@@ -20,8 +20,7 @@ export function createNavigationController() {
 
   function mountHost(): Root {
     if (root && document.getElementById(HOST_ID)) return root
-    // Turbo's body swap can remove the host element while `root` still references its now-detached shadow tree; unmount
-    // it first so the old React root's listeners don't leak before a fresh host takes its place.
+    // Turbo's body swap can detach the host while `root` still references it; unmount first so old listeners don't leak.
     if (root) {
       root.unmount()
       root = null

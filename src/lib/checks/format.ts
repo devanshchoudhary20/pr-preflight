@@ -7,8 +7,7 @@ export interface FormattedItem {
   snippet: string
 }
 
-// Shared path/line/snippet formatting for the panel row (CheckRow) and the "copy as markdown" export (markdown.ts).
-// snippet is returned as "" when empty; each caller picks its own empty fallback (inline text vs. an omitted suffix).
+// Shared by the panel row (CheckRow) and "copy as markdown" (markdown.ts); snippet is "" when empty so each caller picks its own fallback.
 export function formatItem(item: FindingItem): FormattedItem {
   const path = item.path.trim() || UNKNOWN_FILE_FALLBACK
   const lineSuffix = typeof item.line === "number" ? `:${item.line}` : ""

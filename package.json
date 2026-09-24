@@ -13,7 +13,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
-    "lint": "oxlint",
+    "lint": "oxlint && node scripts/check-comments.mjs",
     "preview": "vite preview",
     "test": "vitest run",
     "icons": "node scripts/icons.mjs",

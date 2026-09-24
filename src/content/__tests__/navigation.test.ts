@@ -7,9 +7,7 @@ import { createNavigationController, compareUrlEquals, HOST_ID } from "../naviga
 // Silences react-dom's "not configured to support act" warning; act() below is exactly that configuration.
 ;(globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT = true
 
-// Isolates the mount/unmount logic under test from ContentApp's own data fetching (belongs to ContentApp's tests),
-// but keeps one real effect (a chrome.runtime.onMessage subscription, mirroring ContentApp's own) so a stale root
-// that fails to unmount before remounting shows up as a leaked listener, not just a silently-passing test.
+// Isolates mount/unmount from ContentApp's data fetching but keeps one real onMessage effect, so a stale root leaks a listener.
 vi.mock("../ContentApp", () => ({
   ContentApp: () => {
     useEffect(() => {

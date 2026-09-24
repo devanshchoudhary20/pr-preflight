@@ -1,7 +1,4 @@
-/* Design tokens for PR Preflight. Matches GitHub Primer's own neutral and
-   semantic values on purpose: the panel is chrome living inside github.com,
-   not a foreign brand, so it borrows the host's vocabulary instead of
-   clashing with the diff colors and CI status dots already on the page. */
+/* Design tokens for PR Preflight; matches GitHub Primer's neutral/semantic values so the panel reads as host chrome, not a foreign brand. */
 
 :host,
 .prp-root {
@@ -33,11 +30,7 @@
   --prp-flag-bg: #ffebe9;
 }
 
-/* data-theme is set on the shadow host / <html> at mount time, read from
-   GitHub's own data-color-mode attribute (fallback: prefers-color-scheme).
-   The content script sets it on the shadow host itself (:host); popup/options
-   set it on document.documentElement, so .prp-root there is a plain light-DOM
-   descendant of that <html> rather than the attribute holder. */
+/* data-theme mirrors data-color-mode (fallback: prefers-color-scheme); content script sets it on :host, popup/options set it on <html>. */
 :host([data-theme="dark"]),
 .prp-root[data-theme="dark"],
 html[data-theme="dark"] .prp-root {

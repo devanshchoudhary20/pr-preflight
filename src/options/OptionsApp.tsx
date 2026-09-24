@@ -110,8 +110,8 @@ export function OptionsApp() {
     void commitSave(id, () => saveConfig({ enabled: { [id]: value } }))
   }
 
-  const warnLines = config.diffSize.warnLines ?? DEFAULT_CONFIG.diffSize.warnLines
-  const flagLines = config.diffSize.flagLines ?? DEFAULT_CONFIG.diffSize.flagLines
+  const warnLines = config.diffSize.warnLines
+  const flagLines = config.diffSize.flagLines
 
   return (
     <div className="prp-root prp-options">

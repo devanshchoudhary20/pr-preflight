@@ -44,8 +44,7 @@ index 4444444..5555555 100644
  }
 `
 
-// The "dependencies" marker sits in unchanged CONTEXT (the header line), not on the added/removed lines themselves,
-// so this only warns once the check scans the whole hunk text instead of addedLines only.
+// The "dependencies" marker sits in unchanged context, not on added/removed lines, so this only warns once the check scans the whole hunk.
 const VERSION_BUMP_INSIDE_EXISTING_BLOCK = `diff --git a/package.json b/package.json
 index 2222222..3333333 100644
 --- a/package.json

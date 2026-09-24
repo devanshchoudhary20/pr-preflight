@@ -65,13 +65,13 @@ function extractDiffStat(fileEl: Element): { additions: number; deletions: numbe
   return { additions: Number(match[1]) || 0, deletions: Number(match[2]) || 0 }
 }
 
-// hunkText is best-effort here: the DOM fallback only extracts added lines (no context/deletion selectors), so lockfile-drift's
-// hunk-text scan degrades to addedLines-equivalent coverage on this path rather than the full hunk.
+// The DOM has no context lines, so the added lines' content is the best available stand-in for hunkText here.
 function parseFileElement(fileEl: Element): DiffFile {
   const path = fileEl.getAttribute(selectors.filePathAttr) || UNKNOWN_FILE_FALLBACK
   const { additions, deletions } = extractDiffStat(fileEl)
   const addedLines = extractAddedLines(fileEl)
-  return { path, additions, deletions, addedLines, hunkText: "" }
+  const hunkText = addedLines.map((line) => line.content).join("\n")
+  return { path, additions, deletions, addedLines, hunkText }
 }
 
 export async function parseDomDiff(): Promise<DiffFile[]> {
