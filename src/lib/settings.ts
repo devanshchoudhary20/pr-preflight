@@ -33,8 +33,7 @@ export async function saveConfig(partial: PartialCheckConfig): Promise<CheckConf
   return next
 }
 
-// A glob-shaped line is any non-empty, single-token string (no internal
-// whitespace); picomatch treats a plain filename as a valid literal glob too.
+// A glob-shaped line is any non-empty, single-token string; picomatch treats a plain filename as a valid literal glob too.
 export function isValidGlobLine(line: string): boolean {
   return line.length > 0 && !/\s/.test(line)
 }

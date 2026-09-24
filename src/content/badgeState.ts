@@ -1,8 +1,6 @@
 import type { PanelLoadState } from "./Panel"
 
-// "empty" = zero-file diff ("No changes on this branch yet."), distinct from
-// "all-clear" = a real diff where every check passed ("All clear"). Popup
-// mirrors this exact mapping so the two surfaces never disagree.
+// "empty" (zero-file diff) is distinct from "all-clear" (a real diff where every check passed); popup mirrors this exact mapping.
 export type BadgeState = "loading" | "error" | "empty" | "all-clear" | "success"
 export type Severity = "pass" | "warn" | "flag" | null
 

@@ -1,7 +1,7 @@
 import type { DiffFile } from "../diff"
 import type { Finding, FindingItem } from "./types"
 import { stripAddedPrefix, truncateSnippet } from "./utils"
-import { plural } from "../../content/copy"
+import { plural } from "../text"
 
 const TODO_PATTERN = /\b(TODO|FIXME|XXX|HACK)\b/
 

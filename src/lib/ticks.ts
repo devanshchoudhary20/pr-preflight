@@ -22,7 +22,7 @@ export async function loadTicks(owner: string, repo: string, range: string): Pro
     await chrome.storage.local.remove(key)
     return new Set()
   }
-  return new Set(record.checkedIds ?? [])
+  return new Set(record.checkedIds)
 }
 
 export async function setTick(owner: string, repo: string, range: string, id: string, checked: boolean): Promise<Set<string>> {

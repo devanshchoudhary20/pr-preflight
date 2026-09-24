@@ -1,7 +1,7 @@
 import parseDiffLib from "parse-diff"
 
 export interface AddedLine {
-  lineNo: number
+  lineNo?: number
   content: string
 }
 
@@ -27,6 +27,56 @@ export class DiffFetchError extends Error {
   }
 }
 
+// sizeMb is a formatted string, not a number, so it can carry the "over 2"
+// fallback for the streamed-cutoff case where the exact byte count is unknown.
+export class DiffTooLargeError extends Error {
+  sizeMb: string
+  constructor(sizeMb: string) {
+    super("diff exceeds the 2 MB cap")
+    this.name = "DiffTooLargeError"
+    this.sizeMb = sizeMb
+  }
+}
+
+export const DIFF_SIZE_CAP_BYTES = 2 * 1024 * 1024
+
+function formatSizeMb(bytes: number): string {
+  return (bytes / (1024 * 1024)).toFixed(1)
+}
+
+// Checks content-length first to skip the download entirely when GitHub reports
+// a size up front; otherwise reads the stream and aborts once it crosses the cap.
+async function readWithCap(response: Response): Promise<string> {
+  const declaredBytes = Number(response.headers.get("content-length"))
+  if (Number.isFinite(declaredBytes) && declaredBytes > DIFF_SIZE_CAP_BYTES) {
+    if (response.body) await response.body.cancel().catch(() => {})
+    throw new DiffTooLargeError(formatSizeMb(declaredBytes))
+  }
+
+  const reader = response.body?.getReader()
+  if (!reader) {
+    const text = await response.text()
+    if (text.length > DIFF_SIZE_CAP_BYTES) throw new DiffTooLargeError("over 2")
+    return text
+  }
+
+  const decoder = new TextDecoder()
+  let receivedBytes = 0
+  let result = ""
+  for (;;) {
+    const { done, value } = await reader.read()
+    if (done) break
+    receivedBytes += value.byteLength
+    if (receivedBytes > DIFF_SIZE_CAP_BYTES) {
+      await reader.cancel().catch(() => {})
+      throw new DiffTooLargeError("over 2")
+    }
+    result += decoder.decode(value, { stream: true })
+  }
+  result += decoder.decode()
+  return result
+}
+
 interface FetchDiffOptions {
   signal?: AbortSignal
 }
@@ -48,7 +98,7 @@ export async function fetchDiff(
   if (!response.ok) {
     throw new DiffFetchError(`GitHub responded with status ${response.status}`, response.status)
   }
-  return response.text()
+  return readWithCap(response)
 }
 
 // GitHub's diff always addresses the added-line path via "to"; fall back to

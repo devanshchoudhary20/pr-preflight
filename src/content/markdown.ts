@@ -4,7 +4,7 @@ import { UNKNOWN_FILE_FALLBACK } from "./copy"
 
 // item.snippet is already the pattern name (never the raw match) for the secrets check, so this sub-bullet is safe to paste publicly.
 function formatItemLine(item: FindingItem): string {
-  const path = item.path?.trim() || UNKNOWN_FILE_FALLBACK
+  const path = item.path.trim() || UNKNOWN_FILE_FALLBACK
   const lineSuffix = typeof item.line === "number" ? `:${item.line}` : ""
   const snippet = item.snippet?.trim()
   const snippetSuffix = snippet ? ` — ${truncateSnippet(snippet)}` : ""

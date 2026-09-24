@@ -16,6 +16,7 @@ interface PanelProps {
   stats: DiffStats | null
   findings: Finding[] | null
   errorMessage: string | null
+  errorHeading?: string | null
   onRetry: () => void
   onCollapse: () => void
 }
@@ -23,7 +24,7 @@ interface PanelProps {
 const SKELETON_ROW_KEYS = ["s0", "s1", "s2", "s3", "s4", "s5"]
 const COPY_CONFIRM_MS = 2000
 
-export function Panel({ compareUrl, loadState, stats, findings, errorMessage, onRetry, onCollapse }: PanelProps) {
+export function Panel({ compareUrl, loadState, stats, findings, errorMessage, errorHeading, onRetry, onCollapse }: PanelProps) {
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set())
   const [checkedIds, setCheckedIds] = useState<Set<string>>(new Set())
   const [copyState, setCopyState] = useState<"idle" | "copied">("idle")
@@ -121,6 +122,7 @@ export function Panel({ compareUrl, loadState, stats, findings, errorMessage, on
         )}
         {isError && (
           <div className="prp-panel-error">
+            {errorHeading && <p className="prp-panel-error-heading">{errorHeading}</p>}
             <p aria-live="polite">{errorMessage}</p>
             <button type="button" onClick={onRetry}>
               Retry

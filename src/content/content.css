@@ -250,6 +250,12 @@
   font-size: 13px;
 }
 
+.prp-panel-error-heading {
+  margin: 0;
+  font-weight: 600;
+  font-size: 14px;
+}
+
 .prp-panel-error button {
   align-self: flex-start;
   padding: var(--prp-space-xs) var(--prp-space-md);

@@ -1,7 +1,7 @@
 import type { DiffFile } from "../diff"
 import type { Finding, FindingItem } from "./types"
 import { basename, stripAddedPrefix } from "./utils"
-import { plural } from "../../content/copy"
+import { plural } from "../text"
 
 // snippet is the pattern NAME, never the matched text, so a screenshot of the panel is safe to post publicly.
 const SECRET_PATTERNS: { name: string; pattern: RegExp }[] = [

@@ -2,11 +2,13 @@ import { useEffect, useRef, useState } from "react"
 import { Badge } from "./Badge"
 import { deriveBadgeState } from "./badgeState"
 import { Panel, type PanelLoadState } from "./Panel"
-import { fetchDiff, parseDiff, diffStats, DiffFetchError, type DiffFile, type DiffStats } from "../lib/diff"
+import { fetchDiff, parseDiff, diffStats, DiffFetchError, DiffTooLargeError, type DiffFile, type DiffStats } from "../lib/diff"
+import { parseDomDiff } from "../lib/domDiff"
 import { runChecks, worstLevel, type Finding } from "../lib/checks"
+import { diffTooLargeFinding } from "../lib/checks/diffSize"
 import { DEFAULT_CONFIG, type CheckConfig } from "../lib/checks/types"
 import { loadConfig, onConfigChange } from "../lib/settings"
-import { FETCH_ERROR_FALLBACK } from "./copy"
+import { FETCH_ERROR_FALLBACK, COMBINED_ERROR_HEADING, COMBINED_ERROR_BODY } from "./copy"
 import type { CompareUrl } from "../lib/url"
 
 interface ContentAppProps {
@@ -27,13 +29,22 @@ function toErrorMessage(err: unknown): string {
   return FETCH_ERROR_FALLBACK
 }
 
+// Network failures and 5xx are transient, so the DOM (already rendered by
+// the time the content script runs) is worth a look; 401/403/404 mean the
+// compare itself isn't reachable, so its file list won't be there either.
+function isRecoverableFetchError(err: DiffFetchError): boolean {
+  return err.status === undefined || err.status >= 500
+}
+
 export function ContentApp({ compareUrl }: ContentAppProps) {
   const [expanded, setExpanded] = useState(false)
   const [loadState, setLoadState] = useState<PanelLoadState>("loading")
   const [stats, setStats] = useState<DiffStats | null>(null)
   const [files, setFiles] = useState<DiffFile[] | null>(null)
+  const [syntheticFindings, setSyntheticFindings] = useState<Finding[] | null>(null)
   const [config, setConfig] = useState<CheckConfig>(DEFAULT_CONFIG)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [errorHeading, setErrorHeading] = useState<string | null>(null)
   const [retryToken, setRetryToken] = useState(0)
 
   // Config loads independently of the diff fetch and re-runs checks on the
@@ -52,28 +63,68 @@ export function ContentApp({ compareUrl }: ContentAppProps) {
 
   useEffect(() => {
     if (!compareUrl) return
+    const { owner, repo, range } = compareUrl
     const controller = new AbortController()
-    fetchDiff(compareUrl.owner, compareUrl.repo, compareUrl.range, { signal: controller.signal })
-      .then((text) => {
+    let cancelled = false
+
+    async function run(): Promise<void> {
+      try {
+        const text = await fetchDiff(owner, repo, range, { signal: controller.signal })
+        if (cancelled) return
         const parsedFiles = parseDiff(text)
         setFiles(parsedFiles)
         setStats(diffStats(parsedFiles))
         setLoadState(parsedFiles.length === 0 ? "empty" : "ready")
-      })
-      .catch((err) => {
+      } catch (err) {
         if (err instanceof DOMException && err.name === "AbortError") return
+        if (cancelled) return
+
+        if (err instanceof DiffTooLargeError) {
+          const domFiles = await parseDomDiff().catch(() => [])
+          if (cancelled) return
+          setFiles(null)
+          setStats(domFiles.length > 0 ? diffStats(domFiles) : null)
+          setSyntheticFindings([diffTooLargeFinding(err.sizeMb)])
+          setLoadState("ready")
+          return
+        }
+
+        if (err instanceof DiffFetchError && isRecoverableFetchError(err)) {
+          const domFiles = await parseDomDiff().catch(() => [])
+          if (cancelled) return
+          if (domFiles.length > 0) {
+            setFiles(domFiles)
+            setStats(diffStats(domFiles))
+            setLoadState("ready")
+            return
+          }
+          setErrorHeading(COMBINED_ERROR_HEADING)
+          setErrorMessage(COMBINED_ERROR_BODY)
+          setLoadState("error")
+          return
+        }
+
+        setErrorHeading(null)
         setErrorMessage(toErrorMessage(err))
         setLoadState("error")
-      })
-    return () => controller.abort()
+      }
+    }
+
+    run()
+    return () => {
+      cancelled = true
+      controller.abort()
+    }
   }, [compareUrl, retryToken])
 
-  // Derived during render, not an effect: findings depend only on files/config, both already React state.
-  const findings = files ? runChecks(files, config) : null
+  // Derived during render, not an effect: findings depend only on files/config/syntheticFindings, all already React state.
+  const findings = syntheticFindings ?? (files ? runChecks(files, config) : null)
 
   function handleRetry(): void {
     setLoadState("loading")
     setErrorMessage(null)
+    setErrorHeading(null)
+    setSyntheticFindings(null)
     setFiles(null)
     setRetryToken((n) => n + 1)
   }
@@ -113,6 +164,7 @@ export function ContentApp({ compareUrl }: ContentAppProps) {
           stats={stats}
           findings={findings}
           errorMessage={errorMessage}
+          errorHeading={errorHeading}
           onRetry={handleRetry}
           onCollapse={() => setExpanded(false)}
         />
