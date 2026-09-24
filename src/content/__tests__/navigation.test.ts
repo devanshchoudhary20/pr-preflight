@@ -2,8 +2,7 @@
 import { describe, expect, it, vi, afterEach } from "vitest"
 import { createNavigationController, compareUrlEquals, HOST_ID } from "../navigation"
 
-// Isolates the mount/unmount decision logic under test from ContentApp's own
-// data fetching (chrome.storage, fetch), which belongs to ContentApp's tests.
+// Isolates the mount/unmount logic under test from ContentApp's own data fetching (belongs to ContentApp's tests).
 vi.mock("../ContentApp", () => ({ ContentApp: () => null }))
 
 // jsdom doesn't implement matchMedia; detectTheme's prefers-color-scheme fallback needs it present.
@@ -45,8 +44,7 @@ describe("navigation controller", () => {
     setPathname("/octocat/hello-world/compare/main...other-branch")
     controller.handleNavigation()
 
-    // Idempotent: switching the branch dropdown never spawns a second host,
-    // it re-renders ContentApp (keyed on owner/repo/range) into the same one.
+    // Idempotent: a branch switch re-renders ContentApp into the same host, never spawns a second one.
     expect(document.querySelectorAll(`#${HOST_ID}`)).toHaveLength(1)
     expect(document.getElementById(HOST_ID)).toBe(firstHost)
   })

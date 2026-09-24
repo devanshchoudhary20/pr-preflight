@@ -24,9 +24,7 @@ function makeArea(data: Record<string, unknown>, areaName: string, listeners: Li
   }
 }
 
-// Tiny in-memory stand-in for chrome.storage.{sync,local} plus onChanged,
-// enough surface for settings.ts and ticks.ts to run under Vitest (no real
-// extension runtime in test).
+// Tiny in-memory stand-in for chrome.storage.{sync,local} plus onChanged, enough for tests (no real extension runtime).
 export function installChromeStorageStub(): void {
   const syncData: Record<string, unknown> = {}
   const localData: Record<string, unknown> = {}

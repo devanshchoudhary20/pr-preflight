@@ -8,9 +8,7 @@ function hasFileRows(): boolean {
   return document.querySelectorAll(selectors.fileRow).length > 0
 }
 
-// #files_bucket loads its rows via an <include-fragment>; resolve on whichever
-// signal comes first (its "load" event or the bucket actually gaining rows),
-// capped at 10s so a stalled fragment can't hang the fallback forever.
+// Resolves on whichever comes first (fragment "load" or the bucket gaining rows), capped at 10s.
 function waitForFilesBucket(): Promise<void> {
   return new Promise((resolve) => {
     if (hasFileRows()) {
@@ -42,9 +40,7 @@ function waitForFilesBucket(): Promise<void> {
   })
 }
 
-// The populated line-number cell is the one adjacent to the code cell (the
-// blank old-side cell on an added line has no data-line-number), so take the
-// last match in the row rather than the first.
+// The blank old-side cell on an added line has no data-line-number, so take the last match in the row.
 function extractLineNumber(row: Element | null): number | undefined {
   if (!row) return undefined
   const cells = row.querySelectorAll("td[data-line-number]")
@@ -68,8 +64,7 @@ function extractDiffStat(fileEl: Element): { additions: number; deletions: numbe
   return { additions: Number(match[1]) || 0, deletions: Number(match[2]) || 0 }
 }
 
-// Mirrors resolvePath's inline fallback in diff.ts rather than importing it,
-// since that literal already lives duplicated there instead of in a shared constant.
+// Mirrors resolvePath's inline fallback in diff.ts (that literal isn't a shared constant to import).
 function parseFileElement(fileEl: Element): DiffFile {
   const path = fileEl.getAttribute(selectors.filePathAttr) || "(unknown file)"
   const { additions, deletions } = extractDiffStat(fileEl)

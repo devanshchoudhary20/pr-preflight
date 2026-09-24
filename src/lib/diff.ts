@@ -27,8 +27,7 @@ export class DiffFetchError extends Error {
   }
 }
 
-// sizeMb is a formatted string, not a number, so it can carry the "over 2"
-// fallback for the streamed-cutoff case where the exact byte count is unknown.
+// sizeMb is a string, not a number, so it can carry the "over 2" fallback when the byte count is unknown.
 export class DiffTooLargeError extends Error {
   sizeMb: string
   constructor(sizeMb: string) {
@@ -44,8 +43,7 @@ function formatSizeMb(bytes: number): string {
   return (bytes / (1024 * 1024)).toFixed(1)
 }
 
-// Checks content-length first to skip the download entirely when GitHub reports
-// a size up front; otherwise reads the stream and aborts once it crosses the cap.
+// Checks content-length first to skip the download when GitHub reports a size up front.
 async function readWithCap(response: Response): Promise<string> {
   const declaredBytes = Number(response.headers.get("content-length"))
   if (Number.isFinite(declaredBytes) && declaredBytes > DIFF_SIZE_CAP_BYTES) {
@@ -101,8 +99,7 @@ export async function fetchDiff(
   return readWithCap(response)
 }
 
-// GitHub's diff always addresses the added-line path via "to"; fall back to
-// "from" for pure deletions where "to" is /dev/null.
+// Falls back to "from" for pure deletions, where "to" is /dev/null.
 function resolvePath(file: parseDiffLib.File): string {
   if (file.to && file.to !== "/dev/null") return file.to
   if (file.from && file.from !== "/dev/null") return file.from

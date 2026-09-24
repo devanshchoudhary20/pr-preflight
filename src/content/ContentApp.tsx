@@ -29,9 +29,7 @@ function toErrorMessage(err: unknown): string {
   return FETCH_ERROR_FALLBACK
 }
 
-// Network failures and 5xx are transient, so the DOM (already rendered by
-// the time the content script runs) is worth a look; 401/403/404 mean the
-// compare itself isn't reachable, so its file list won't be there either.
+// Network/5xx are transient (worth a DOM fallback); 401/403/404 mean the compare itself is unreachable.
 function isRecoverableFetchError(err: DiffFetchError): boolean {
   return err.status === undefined || err.status >= 500
 }
@@ -47,8 +45,7 @@ export function ContentApp({ compareUrl }: ContentAppProps) {
   const [errorHeading, setErrorHeading] = useState<string | null>(null)
   const [retryToken, setRetryToken] = useState(0)
 
-  // Config loads independently of the diff fetch and re-runs checks on the
-  // already-parsed files below, never refetching the diff on a threshold/toggle change.
+  // Config loads independently of the diff fetch; a threshold/toggle change re-runs checks without refetching.
   useEffect(() => {
     let cancelled = false
     loadConfig().then((loaded) => {

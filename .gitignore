@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Release zips, keep the directory
+release/*
+!release/.gitkeep
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

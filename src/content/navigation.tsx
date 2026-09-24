@@ -19,8 +19,7 @@ export function compareUrlEquals(a: CompareUrl | null, b: CompareUrl | null): bo
   return a.owner === b.owner && a.repo === b.repo && a.range === b.range
 }
 
-// One controller per content-script injection, closed over its own root/state
-// so tests can create isolated instances instead of sharing module singletons.
+// One controller per injection, closed over its own root/state so tests can create isolated instances.
 export function createNavigationController() {
   let root: Root | null = null
   let currentCompareUrl: CompareUrl | null = null
@@ -52,9 +51,7 @@ export function createNavigationController() {
     document.getElementById(HOST_ID)?.remove()
   }
 
-  // Remounts (fresh ContentApp state) rather than re-rendering in place: a
-  // React `key` keyed on owner/repo/range forces the reset the screens file
-  // asks for when the compare dropdown switches branches.
+  // Remounts (not re-renders) via a key on owner/repo/range so a branch switch resets ContentApp state.
   function handleNavigation(): void {
     const nextUrl = parseCompareUrl(location.pathname)
     if (compareUrlEquals(currentCompareUrl, nextUrl)) return
@@ -67,13 +64,7 @@ export function createNavigationController() {
     mountHost().render(<ContentApp key={key} compareUrl={nextUrl} />)
   }
 
-  // GitHub's compare page is a classic Rails view, not a Turbo Frame: a branch
-  // switch in the dropdown does a full Turbo Drive visit that swaps <head>,
-  // including <title> (which differs per range). Watching head mutations
-  // catches that swap the same way regardless of which Turbo lifecycle event
-  // fires it, so it doesn't depend on turbo:render's exact timing (unverified
-  // live for this project); turbo:load and popstate cover the two navigation
-  // paths named explicitly in the plan on top of that catch-all.
+  // Head mutations catch Turbo Drive's full-page <head>/<title> swap on a branch switch, regardless of lifecycle timing.
   function observe(): () => void {
     const headObserver = new MutationObserver(handleNavigation)
     headObserver.observe(document.head, { childList: true, subtree: true, characterData: true })

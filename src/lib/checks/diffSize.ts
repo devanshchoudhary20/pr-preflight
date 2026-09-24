@@ -19,8 +19,7 @@ export function checkDiffSize(files: DiffFile[], config: CheckConfig): Finding {
   return { id: "diff-size", level, title, items: [] }
 }
 
-// Synthetic finding shown as the only row when fetchDiff aborts past the 2 MB
-// cap; sizeMb is already resolved to a display string (real MB or "over 2").
+// Synthetic finding shown as the only row when fetchDiff aborts past the 2 MB cap.
 export function diffTooLargeFinding(sizeMb: string): Finding {
   return {
     id: "diff-size",

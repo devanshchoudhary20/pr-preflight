@@ -1,32 +1,62 @@
-# React + TypeScript + Vite
+# PR Preflight
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A self-review checklist for GitHub's compare page. Six diff checks run the moment you land on `/compare` or `/pull/new`, before anyone else has seen the PR, no API key and no setup.
 
-Currently, two official plugins are available:
+![PR Preflight in action](./docs/demo.gif)
+<!-- GIF placeholder: TEST captures a real GIF of the badge → panel → expanded row flow on a planted-violation branch and swaps this path in. -->
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## The six checks
 
-## React Compiler
+| # | Check | Fires when |
+|---|---|---|
+| 1 | Diff size | Changed lines/files cross a warn or flag threshold (defaults: warn 400 lines / 20 files, flag 1000 lines / 50 files) |
+| 2 | TODO / FIXME left in | An added line matches `TODO`, `FIXME`, `XXX`, or `HACK` |
+| 3 | Secret patterns | An added line matches a known key/token/private-key shape, or a changed file is named `.env`/`.env.*` |
+| 4 | Source changed, no tests changed | Source files changed but no matching test file did |
+| 5 | Debug leftovers | An added line has `console.log`/`debugger`/`binding.pry`/`byebug`/`dd()`/`var_dump`/a bare `print(` in Python |
+| 6 | Lockfile drift | A manifest (`package.json`, `pyproject.toml`, etc.) changed its dependencies but the paired lockfile didn't |
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Findings never block "Create pull request." This informs, it doesn't gate.
 
-## Expanding the Oxlint configuration
+## Install from the store
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+[Chrome Web Store listing — link pending review]
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+## Install from a zip (while the store review is in progress)
+
+1. Download `pr-preflight-<version>.zip` from [Releases], or build it yourself (see Development below).
+2. Unzip it, or use `dist/` directly if building from source.
+3. Open `chrome://extensions`.
+4. Enable **Developer mode** (top-right toggle).
+5. Click **Load unpacked**, and pick the unzipped folder (or `dist/`).
+
+[Releases]: https://github.com/devanshchoudhary20/pr-preflight/releases
+
+## Development
+
+```bash
+npm install
+npm run dev       # vite dev server, watches for changes
+npm test          # vitest, runs the pure runChecks() suite against fixture diffs
+npm run build     # tsc --noEmit && vite build → dist/
+npm run package   # build, then zip dist/ into release/pr-preflight-<version>.zip
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Load `dist/` via `chrome://extensions` → Developer mode → Load unpacked during development, same as the install-from-zip path above.
+
+## Privacy
+
+No data leaves `github.com`. See [PRIVACY.md](./PRIVACY.md).
+
+## License
+
+MIT
+
+## Later
+
+- BYOK Claude summary (opt-in, 3-bullet risk summary). Deferred from v1 on purpose: adds `host_permissions` for `api.anthropic.com`, a privacy policy requirement, and a longer store review. Candidate for v1.1 after the listing is live.
+- GitHub Enterprise custom domains via `optional_host_permissions`.
+- GitLab merge request creation page.
+- Repo-level config `.prpreflight.json` for team thresholds.
+- Extra checks: large binaries added, `.only(` in tests, merge-conflict markers, commented-out code blocks.
+- Firefox port.
