@@ -6,7 +6,7 @@
     "yolo": true,
     "cloud": false
   },
-  "phase": "launch.gate",
+  "phase": "launch.pending_review",
   "phases": {
     "think": {
       "status": "done",
@@ -145,10 +145,17 @@
       "store_status": "manual upload pending"
     },
     "launch": {
-      "status": "ready_for_upload",
+      "status": "submitted",
       "artifact": ".anbu/launch-kit.md",
       "done_at": "2026-09-25T01:55:57",
-      "zip": "release/pr-preflight-0.1.3.zip"
+      "zip": "release/pr-preflight-0.1.3.zip",
+      "store_item_id": "khgpmbkndlkngcldfafgkkjgaabconfp",
+      "store_url": "https://chromewebstore.google.com/detail/khgpmbkndlkngcldfafgkkjgaabconfp",
+      "submitted_at": "2026-09-25T17:19:02",
+      "version": "0.1.3",
+      "remaining": [
+        "Show HN and Product Hunt after the listing goes live"
+      ]
     }
   },
   "attempts": {

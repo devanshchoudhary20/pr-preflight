@@ -19,6 +19,8 @@ Findings never block "Create pull request." This informs, it doesn't gate.
 
 ## Install from the store
 
+Chrome Web Store listing (pending review): https://chromewebstore.google.com/detail/khgpmbkndlkngcldfafgkkjgaabconfp
+
 [Chrome Web Store listing — link pending review]
 
 ## Install from a zip (while the store review is in progress)
