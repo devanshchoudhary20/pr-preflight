@@ -2,18 +2,246 @@
   "slug": "20260616-pr-preflight-extension",
   "track": "weekend",
   "started": "2026-09-24",
-  "flags": { "yolo": false, "cloud": false },
-  "phase": "design",
-  "phases": {
-    "think": { "status": "done", "artifact": ".anbu/plan.md", "done_at": "2026-09-24" },
-    "design": { "status": "in_progress", "artifact": ".anbu/screens.md", "done_at": null },
-    "build": { "status": "pending", "artifact": "git log", "done_at": null, "chunks": [] },
-    "test": { "status": "pending", "artifact": ".anbu/evidence/report.md", "done_at": null },
-    "ship": { "status": "pending", "artifact": "url", "done_at": null, "url": null },
-    "launch": { "status": "pending", "artifact": ".anbu/launch-kit.md", "done_at": null }
+  "flags": {
+    "yolo": true,
+    "cloud": false
   },
-  "attempts": { "think": 1, "design": 1, "build": {}, "test": {}, "ship": 0, "launch": 0 },
-  "verifier": { "build": null, "test": null, "yellow_items": [] },
+  "phase": "launch.gate",
+  "phases": {
+    "think": {
+      "status": "done",
+      "artifact": ".anbu/plan.md",
+      "done_at": "2026-09-24T18:49:56"
+    },
+    "design": {
+      "status": "done",
+      "artifact": ".anbu/screens.md",
+      "done_at": "2026-09-24T18:49:56",
+      "figma": {
+        "url": "https://www.figma.com/design/IyGpKBmk2qWbD5WyHYg7Ke/PR-Preflight",
+        "frames": {
+          "badge-light": "4:10",
+          "badge-dark": "4:19",
+          "panel-light": "4:117",
+          "panel-dark": "4:215",
+          "panel-error": "4:234",
+          "panel-loading": "4:277"
+        },
+        "verified": "2026-09-24T18:59:02",
+        "awaiting": "user review before BUILD"
+      }
+    },
+    "build": {
+      "status": "done",
+      "artifact": "git log bd422f1..efb9ccf; release/pr-preflight-0.1.0.zip",
+      "done_at": "2026-09-24T21:03:46",
+      "chunks": [
+        {
+          "n": 1,
+          "name": "Mount and diff stats",
+          "commit": "fc80133",
+          "checkpoint": 8,
+          "carry": [
+            "setState-in-effect on retry",
+            "dup strings: error fallback, empty copy, plural files",
+            "role=dialog -> complementary + aria-live",
+            "drop redundant guards (isFinite, ?? 0 on typed numbers, errorMessage ?? fallback)",
+            "single-line comments only",
+            "severity prop dead until chunk 2"
+          ]
+        },
+        {
+          "n": 2,
+          "name": "Six checks and the checklist",
+          "commit": "c78ae3d",
+          "checkpoint": 7.5,
+          "carry": [
+            "CRITICAL: zero-file diff badge must say 'No changes on this branch yet', not 'All clear' (ContentApp badgeState)",
+            "multi-line comments still present (2nd flag)",
+            "dup truncate: utils.truncateSnippet vs CheckRow.formatSnippet",
+            "delete Number.isFinite in pluralFiles",
+            "plural() helper",
+            "aria-controls on row toggle",
+            "lockfileScope from kept"
+          ]
+        },
+        {
+          "n": 3,
+          "name": "Settings, persistence, copy as markdown, popup",
+          "commit": "9cedbb0",
+          "checkpoint": 8,
+          "stalled_once": true,
+          "carry": [
+            "move plural() to lib/text.ts (lib must not import content)",
+            "multi-line comments in badgeState.ts, settings.ts (3rd flag)",
+            "saveConfig read-then-write race (optional)",
+            "redundant guards in markdown.ts, ticks.ts",
+            "activeTab must be justified in store listing"
+          ]
+        },
+        {
+          "n": 4,
+          "name": "Resilience",
+          "commit": "26ad550",
+          "checkpoint": 8,
+          "carry": [
+            "whole-repo multi-line comment sweep (4th flag)",
+            "optional: reducer in ContentApp",
+            "optional: observe title only"
+          ]
+        },
+        {
+          "n": 5,
+          "name": "Store packaging and launch assets",
+          "commit": "efb9ccf",
+          "checkpoint": 8,
+          "carry": []
+        },
+        {
+          "n": 6,
+          "name": "Verifier fixes",
+          "commit": "04dbf24",
+          "checkpoint": null,
+          "carry": []
+        },
+        {
+          "n": 7,
+          "name": "Verifier fixes 2 + comment lint lever",
+          "commit": "301709d",
+          "checkpoint": null,
+          "carry": []
+        }
+      ]
+    },
+    "test": {
+      "status": "done",
+      "artifact": ".anbu/evidence/report.md (24 pass, 0 fail)",
+      "done_at": "2026-09-24T22:31:31",
+      "prereqs": {
+        "unpacked_loaded": true,
+        "fixture_repo": "https://github.com/devanshchoudhary20/prp-fixture"
+      },
+      "fixtures": {
+        "planted": "https://github.com/devanshchoudhary20/prp-fixture/compare/main...feat/planted",
+        "clean": "https://github.com/devanshchoudhary20/prp-fixture/compare/main...docs/clean"
+      },
+      "driven": 7,
+      "total": 9,
+      "fails": 0,
+      "blocked": [
+        "options page",
+        "popup"
+      ],
+      "extension_id": "hjhghhbjamjmllnmohdfcadlkdcajgfg",
+      "smoke": "lt-web-platform TE-28378: mounted, 47 files matched, flag on size, warn on tests, 4 pass, console clean"
+    },
+    "ship": {
+      "status": "done",
+      "artifact": "url",
+      "done_at": "2026-09-24T22:33:57",
+      "url": "https://github.com/devanshchoudhary20/pr-preflight",
+      "repo_url": "https://github.com/devanshchoudhary20/pr-preflight",
+      "zip_path": "release/pr-preflight-0.1.0.zip",
+      "store_status": "manual upload pending"
+    },
+    "launch": {
+      "status": "ready_for_upload",
+      "artifact": ".anbu/launch-kit.md",
+      "done_at": "2026-09-25T01:55:57",
+      "zip": "release/pr-preflight-0.1.3.zip"
+    }
+  },
+  "attempts": {
+    "think": 1,
+    "design": 1,
+    "build": {
+      "1": 1,
+      "2": 1,
+      "3": 2,
+      "4": 1,
+      "5": 1,
+      "verify": 3
+    },
+    "test": {
+      "verify": 2
+    },
+    "ship": 0,
+    "launch": 0
+  },
+  "verifier": {
+    "build": {
+      "round": 3,
+      "verdict": "GREEN",
+      "cosmetic": [
+        "check-comments skips /* */ in ts and scripts/ dir",
+        "DOM hunkText keeps leading +"
+      ]
+    },
+    "test": {
+      "round": 2,
+      "verdict": "YELLOW",
+      "yellow_items": [
+        "retry unreachable: DOM fallback succeeds first (disclosed)",
+        "popup compare-tab/unreachable/github-non-compare/empty/loading states undriven (disclosed)"
+      ]
+    },
+    "yellow_items": []
+  },
   "paused": null,
-  "tokens_by_phase": {}
+  "tokens_by_phase": {},
+  "notes": {
+    "think": "score 8; plan approved in chat",
+    "design": "scaffold wiped .anbu via create-vite --overwrite; plan.md reconstructed, verified identical structure (135 lines)",
+    "figma": "user requested Figma mockups before BUILD",
+    "verify_cap": "raised to 3 by user in chat 2026-09-24"
+  },
+  "security_review": {
+    "range": "bd333f1..efb9ccf",
+    "high": 0,
+    "medium": 0,
+    "notes": [
+      "onMessage listener does not check sender.id; unexploitable (no externally_connectable); defense-in-depth one-liner"
+    ]
+  },
+  "summary": {
+    "repo": "https://github.com/devanshchoudhary20/pr-preflight",
+    "zip": "release/pr-preflight-0.1.0.zip",
+    "commits": 10,
+    "unit_tests": 59,
+    "e2e_rows": 24,
+    "verifier_rounds": {
+      "build": 3,
+      "test": 2
+    },
+    "security": "clean",
+    "figma": "https://www.figma.com/design/IyGpKBmk2qWbD5WyHYg7Ke/PR-Preflight",
+    "finished_build_at": "2026-09-24T22:38:26"
+  },
+  "pm": {
+    "ship": {
+      "verdict": "CONCERNS",
+      "would_ship": true,
+      "sev2": [
+        "expanded panel covers GitHub's Create pull request button",
+        "Insert into description shipped untested; #pull_request_body unverified",
+        "popup primary state has zero evidence",
+        "DOM fallback reports 0 changed lines so size check cannot warn on that path"
+      ],
+      "sev1_count": 9,
+      "v02": [
+        "make Insert into description the headline",
+        "Copy as prompt for Claude Code",
+        "per-repo .prpreflight.json",
+        "chevron on expandable rows",
+        "theme inputs on options",
+        "dark badge screenshot"
+      ],
+      "figma_note": "Figma MCP hit Starter-plan tool-call limit; fidelity judged against spec",
+      "sev2_resolved": [
+        "panel overlap",
+        "insert into description verified by click"
+      ]
+    }
+  },
+  "version": "0.1.3"
 }
