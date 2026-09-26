@@ -19,7 +19,7 @@ Findings never block "Create pull request." This informs, it doesn't gate.
 
 ## Install from the store
 
-Chrome Web Store listing (pending review): https://chromewebstore.google.com/detail/khgpmbkndlkngcldfafgkkjgaabconfp
+Install from the Chrome Web Store: https://chromewebstore.google.com/detail/pr-preflight/khgpmbkndlkngcldfafgkkjgaabconfp
 
 [Chrome Web Store listing — link pending review]
 
